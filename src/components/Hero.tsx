@@ -23,7 +23,7 @@ const Hero = () => {
           </p>
           
           {/* CTA Button */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="animate-fade-in mb-16" style={{ animationDelay: '0.4s' }}>
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-glow"
@@ -33,10 +33,21 @@ const Hero = () => {
             </Button>
           </div>
           
-          {/* Minimal Visual Element */}
-          <div className="mt-16 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-2xl">
-              <Zap className="h-12 w-12 text-white" />
+          {/* Video Demo */}
+          <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-xl font-space-grotesk font-semibold text-text mb-6">
+                See How LinkedIn Post Creation System Works
+              </h3>
+              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+                <iframe
+                  src="https://www.loom.com/embed/2c25b186cd6541daae1431a60f158958?sid=9a2b5ffc-78d5-4635-a91b-35e53acd7988"
+                  frameBorder="0"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  title="LinkedIn Post Creation System Demo"
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
