@@ -29,7 +29,7 @@ const Hero = () => {
               className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-glow"
             >
               <Zap className="mr-2 h-5 w-5" />
-              Try AutoPulse Free
+              Try Content Relay Free
             </Button>
           </div>
           

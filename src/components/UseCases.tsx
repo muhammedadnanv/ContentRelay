@@ -44,7 +44,7 @@ const UseCases = () => {
               Unlock Your LinkedIn Potential
             </h2>
             <p className="text-xl text-muted font-dm-sans max-w-2xl mx-auto">
-              From content creation to audience building, AutoPulse handles the heavy lifting
+              From content creation to audience building, Content Relay handles the heavy lifting
             </p>
           </div>
           

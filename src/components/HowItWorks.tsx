@@ -41,7 +41,7 @@ const HowItWorks = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-text mb-6">
-              How AutoPulse Works
+              How Content Relay Works
             </h2>
             <p className="text-xl text-muted font-dm-sans max-w-2xl mx-auto">
               Five intelligent steps that transform your ideas into professional LinkedIn content
