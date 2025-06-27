@@ -5,6 +5,7 @@ import UseCases from "@/components/UseCases";
 import HowItWorks from "@/components/HowItWorks";
 import WhyItMatters from "@/components/WhyItMatters";
 import ToolsSection from "@/components/ToolsSection";
+import PricingSection from "@/components/PricingSection";
 import FounderSection from "@/components/FounderSection";
 import FinalCTA from "@/components/FinalCTA";
 
@@ -17,6 +18,7 @@ const Index = () => {
       <HowItWorks />
       <WhyItMatters />
       <ToolsSection />
+      <PricingSection />
       <FounderSection />
       <FinalCTA />
     </div>
@@ -24,4 +26,3 @@ const Index = () => {
 };
 
 export default Index;
-
