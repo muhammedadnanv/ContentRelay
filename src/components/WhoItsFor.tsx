@@ -6,27 +6,27 @@ const WhoItsFor = () => {
     {
       icon: User,
       title: "Solopreneurs",
-      benefit: "Build your personal brand without the daily grind"
+      benefit: "Get custom automation workflows to build your personal brand"
     },
     {
       icon: Rocket,
       title: "Founders",
-      benefit: "Scale your thought leadership while scaling your business"
+      benefit: "Professional workflow setup for thought leadership automation"
     },
     {
       icon: Target,
       title: "Marketers",
-      benefit: "Amplify your reach with consistent, strategic content"
+      benefit: "Ready-to-use automation workflows for consistent content delivery"
     },
     {
       icon: Code,
       title: "Tech Creators",
-      benefit: "Share your expertise without interrupting your flow"
+      benefit: "Custom-built workflows that work while you focus on coding"
     },
     {
       icon: Wrench,
-      title: "No-Code Users",
-      benefit: "Professional automation without technical complexity"
+      title: "Busy Professionals",
+      benefit: "Done-for-you automation setup without technical complexity"
     }
   ];
 
@@ -36,10 +36,10 @@ const WhoItsFor = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-text mb-6">
-              Built for Modern Professionals
+              Who Gets These Automation Workflows
             </h2>
             <p className="text-xl text-muted font-dm-sans max-w-2xl mx-auto">
-              Whether you're building a business or a brand, AutoPulse adapts to your workflow
+              Professional automation workflows designed for modern professionals who need results, not software
             </p>
           </div>
           

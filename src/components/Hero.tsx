@@ -11,6 +11,11 @@ const Hero = () => {
     <section className="relative flex items-center justify-center overflow-hidden py-20">
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
+          {/* Service Type Badge */}
+          <div className="inline-block bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-medium mb-6 animate-fade-in">
+            Automation Workflow as a Service (AWaaS)
+          </div>
+          
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-bold text-[#1A1A1A] mb-6 leading-tight animate-fade-in">
             Your LinkedIn.
@@ -19,8 +24,8 @@ const Hero = () => {
           
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Transform your LinkedIn presence with AI-powered automation. 
-            Create, schedule, and publish compelling content while you focus on what matters most.
+            Get custom automation workflows that transform your LinkedIn presence with AI-powered content creation. 
+            Professional automation setup, not software subscription.
           </p>
           
           {/* CTA Button */}
@@ -39,7 +44,7 @@ const Hero = () => {
           <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div className="max-w-4xl mx-auto">
               <h3 className="text-xl font-semibold text-[#1A1A1A] mb-6">
-                See How LinkedIn Post Creation System Works
+                See How LinkedIn Automation Workflow Works
               </h3>
               <div className="relative aspect-video rounded-2xl overflow-hidden sketch-card bg-white">
                 <iframe
@@ -47,7 +52,7 @@ const Hero = () => {
                   frameBorder="0"
                   allowFullScreen
                   className="absolute inset-0 w-full h-full"
-                  title="LinkedIn Post Creation System Demo"
+                  title="LinkedIn Automation Workflow Demo"
                 ></iframe>
               </div>
             </div>
