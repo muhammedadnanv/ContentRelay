@@ -36,14 +36,14 @@ const UseCases = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-br from-gray-50 to-blue-50/20">
+    <section className="py-24">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-text mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6">
               Unlock Your LinkedIn Potential
             </h2>
-            <p className="text-xl text-muted font-dm-sans max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               From content creation to audience building, Content Relay handles the heavy lifting
             </p>
           </div>
@@ -52,16 +52,16 @@ const UseCases = () => {
             {useCases.map((useCase, index) => (
               <div 
                 key={useCase.title}
-                className="group p-8 rounded-2xl bg-white hover:bg-gradient-to-br hover:from-white hover:to-blue-50/30 transition-all duration-500 shadow-sm hover:shadow-2xl border border-gray-100 hover:border-primary/30 animate-fade-in cursor-pointer"
+                className="bg-white p-8 rounded-2xl sketch-card animate-fade-in cursor-pointer"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <div className="w-14 h-14 custom-gradient-bg rounded-xl flex items-center justify-center mb-6">
                   <useCase.icon className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-xl font-space-grotesk font-semibold text-text mb-4 group-hover:text-primary transition-colors duration-300">
+                <h3 className="text-xl font-semibold text-[#1A1A1A] mb-4">
                   {useCase.title}
                 </h3>
-                <p className="text-muted font-dm-sans leading-relaxed">
+                <p className="text-gray-600 leading-relaxed">
                   {useCase.description}
                 </p>
               </div>
@@ -74,3 +74,4 @@ const UseCases = () => {
 };
 
 export default UseCases;
+

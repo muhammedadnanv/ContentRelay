@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,19 +38,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -98,6 +92,55 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    font-family: 'IBM Plex Sans', sans-serif;
+    background-color: #F2F2F2;
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: #1A1A1A;
   }
+}
+
+/* Custom styles to replicate the distinct border and shadow effect */
+.sketch-card {
+  border: 2px solid #000000;
+  border-radius: 1rem;
+  box-shadow: 4px 4px 0px 0px #000000;
+  transition: transform 0.2s ease-in-out;
+}
+
+.sketch-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.sketch-button {
+  border: 2px solid #000000;
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 0px 0px #000000;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.sketch-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.custom-gradient-bg {
+  background: linear-gradient(to bottom right, #4F46E5, #9333EA);
+}
+
+.white-outline-button {
+  background-color: white;
+  color: #1A1A1A;
+  border: 2px solid #1A1A1A;
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 0px 0px #1A1A1A;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.white-outline-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #1A1A1A;
 }
