@@ -1,4 +1,4 @@
-
+import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhoItsFor from "@/components/WhoItsFor";
 import UseCases from "@/components/UseCases";
@@ -12,15 +12,18 @@ import FinalCTA from "@/components/FinalCTA";
 const Index = () => {
   return (
     <div className="min-h-screen">
-      <Hero />
-      <WhoItsFor />
-      <UseCases />
-      <HowItWorks />
-      <WhyItMatters />
-      <ToolsSection />
-      <PricingSection />
-      <FounderSection />
-      <FinalCTA />
+      <Navigation />
+      <div className="pt-16">
+        <Hero />
+        <WhoItsFor />
+        <UseCases />
+        <HowItWorks />
+        <WhyItMatters />
+        <ToolsSection />
+        <PricingSection />
+        <FounderSection />
+        <FinalCTA />
+      </div>
     </div>
   );
 };
