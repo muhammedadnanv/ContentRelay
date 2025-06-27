@@ -39,19 +39,19 @@ const PricingSection = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-start space-x-3">
                 <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                <span className="text-gray-700">Text-based LinkedIn post content only</span>
+                <span className="text-gray-700">Full automation setup using n8n + AI Agent</span>
               </div>
               <div className="flex items-start space-x-3">
                 <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                <span className="text-gray-700">Content tailored to your niche and voice</span>
+                <span className="text-gray-700">Powered by Google Gemini AI</span>
               </div>
               <div className="flex items-start space-x-3">
                 <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                <span className="text-gray-700">Ready-to-post content delivered daily</span>
+                <span className="text-gray-700">No-code system with auto-posting</span>
               </div>
               <div className="flex items-start space-x-3">
                 <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                <span className="text-gray-700">No more daily writing stress</span>
+                <span className="text-gray-700">Monthly upgrades + onboarding support</span>
               </div>
             </div>
             <Button 
