@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 
 const Hero = () => {
+  const handleTryContentRelay = () => {
+    window.open("https://forms.gle/ktjPyVR4F7ryMVri6", "_blank");
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
@@ -24,9 +28,10 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="custom-gradient-bg text-white px-8 py-4 text-lg font-medium sketch-button border-2 border-black hover:bg-gradient-to-br hover:from-indigo-700 hover:to-purple-700 shadow-none"
+              onClick={handleTryContentRelay}
             >
               <Zap className="mr-2 h-5 w-5" />
-              Try Content Relay Free
+              Try Content Relay
             </Button>
           </div>
           
@@ -54,4 +59,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
