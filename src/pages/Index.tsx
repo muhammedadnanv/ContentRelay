@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhoItsFor from "@/components/WhoItsFor";
@@ -7,6 +8,7 @@ import WhyItMatters from "@/components/WhyItMatters";
 import ToolsSection from "@/components/ToolsSection";
 import PricingSection from "@/components/PricingSection";
 import FounderSection from "@/components/FounderSection";
+import ReferralSection from "@/components/ReferralSection";
 import FinalCTA from "@/components/FinalCTA";
 
 const Index = () => {
@@ -22,6 +24,7 @@ const Index = () => {
         <ToolsSection />
         <PricingSection />
         <FounderSection />
+        <ReferralSection />
         <FinalCTA />
       </div>
     </div>
