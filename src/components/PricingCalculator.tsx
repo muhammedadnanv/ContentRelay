@@ -30,8 +30,14 @@ const countries: Country[] = [
 
 // Base prices in INR
 const basePrices = {
-  monthly: 999,
-  oneTime: 2999
+  monthly: {
+    original: 1999,
+    current: 999
+  },
+  oneTime: {
+    original: 8999,
+    current: 2999
+  }
 };
 
 // Mock exchange rates (in a real app, you'd fetch from an API)
@@ -78,17 +84,19 @@ const PricingCalculator = () => {
   const getConvertedPrices = () => {
     if (!selectedCountry) return null;
 
-    const monthlyPrice = convertPrice(basePrices.monthly, selectedCountry.currency);
-    const oneTimePrice = convertPrice(basePrices.oneTime, selectedCountry.currency);
+    const monthlyOriginal = convertPrice(basePrices.monthly.original, selectedCountry.currency);
+    const monthlyCurrent = convertPrice(basePrices.monthly.current, selectedCountry.currency);
+    const oneTimeOriginal = convertPrice(basePrices.oneTime.original, selectedCountry.currency);
+    const oneTimeCurrent = convertPrice(basePrices.oneTime.current, selectedCountry.currency);
 
     return {
       monthly: {
-        original: monthlyPrice,
-        formatted: formatPrice(monthlyPrice, selectedCountry.currency, selectedCountry.symbol)
+        original: formatPrice(monthlyOriginal, selectedCountry.currency, selectedCountry.symbol),
+        current: formatPrice(monthlyCurrent, selectedCountry.currency, selectedCountry.symbol)
       },
       oneTime: {
-        original: oneTimePrice,
-        formatted: formatPrice(oneTimePrice, selectedCountry.currency, selectedCountry.symbol)
+        original: formatPrice(oneTimeOriginal, selectedCountry.currency, selectedCountry.symbol),
+        current: formatPrice(oneTimeCurrent, selectedCountry.currency, selectedCountry.symbol)
       }
     };
   };
@@ -144,15 +152,25 @@ const PricingCalculator = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
-                    {convertedPrices.monthly.formatted}
-                  </span>
-                  <span className="text-gray-600">/month</span>
+                <div className="flex flex-col gap-2 mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg text-gray-500 line-through">
+                      {convertedPrices.monthly.original}
+                    </span>
+                    <div className="bg-red-100 text-red-800 px-2 py-1 rounded-md text-xs font-bold">
+                      50% OFF
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
+                      {convertedPrices.monthly.current}
+                    </span>
+                    <span className="text-gray-600">/month</span>
+                  </div>
                 </div>
                 {selectedCountry.code !== "IN" && (
                   <p className="text-sm text-gray-500">
-                    (₹{basePrices.monthly} INR equivalent)
+                    (₹{basePrices.monthly.current} INR equivalent, was ₹{basePrices.monthly.original})
                   </p>
                 )}
               </div>
@@ -197,15 +215,25 @@ const PricingCalculator = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
-                    {convertedPrices.oneTime.formatted}
-                  </span>
-                  <span className="text-gray-600">one-time</span>
+                <div className="flex flex-col gap-2 mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg text-gray-500 line-through">
+                      {convertedPrices.oneTime.original}
+                    </span>
+                    <div className="bg-red-100 text-red-800 px-2 py-1 rounded-md text-xs font-bold">
+                      67% OFF
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
+                      {convertedPrices.oneTime.current}
+                    </span>
+                    <span className="text-gray-600">one-time</span>
+                  </div>
                 </div>
                 {selectedCountry.code !== "IN" && (
                   <p className="text-sm text-gray-500">
-                    (₹{basePrices.oneTime} INR equivalent)
+                    (₹{basePrices.oneTime.current} INR equivalent, was ₹{basePrices.oneTime.original})
                   </p>
                 )}
               </div>
