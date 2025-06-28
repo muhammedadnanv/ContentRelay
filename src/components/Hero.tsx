@@ -1,11 +1,25 @@
 
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
+import { useEffect } from "react";
 
 const Hero = () => {
   const handleTryContentRelay = () => {
     window.open("https://forms.gle/ktjPyVR4F7ryMVri6", "_blank");
   };
+
+  useEffect(() => {
+    // Load Instagram embed script
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = '//www.instagram.com/embed.js';
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
     <section className="relative flex items-center justify-center overflow-hidden py-12 sm:py-16 lg:py-20">
@@ -40,20 +54,30 @@ const Hero = () => {
             </Button>
           </div>
           
-          {/* Video Demo */}
+          {/* Instagram Embed */}
           <div className="animate-fade-in px-4" style={{ animationDelay: '0.6s' }}>
             <div className="max-w-4xl mx-auto">
               <h3 className="text-lg sm:text-xl font-semibold text-[#1A1A1A] mb-4 sm:mb-6">
                 See How LinkedIn Automation Workflow Works
               </h3>
-              <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden sketch-card bg-white">
-                <iframe
-                  src="https://www.loom.com/embed/2c25b186cd6541daae1431a60f158958?sid=9a2b5ffc-78d5-4635-a91b-35e53acd7988"
-                  frameBorder="0"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                  title="LinkedIn Automation Workflow Demo"
-                ></iframe>
+              <div className="flex justify-center">
+                <blockquote 
+                  className="instagram-media" 
+                  data-instgrm-permalink="https://www.instagram.com/reel/DK8uCT-SfaL/" 
+                  data-instgrm-version="14"
+                  style={{ 
+                    background: '#FFF', 
+                    border: '0', 
+                    borderRadius: '3px', 
+                    boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)', 
+                    margin: '1px', 
+                    maxWidth: '540px', 
+                    minWidth: '326px', 
+                    padding: '0', 
+                    width: '99.375%'
+                  }}
+                >
+                </blockquote>
               </div>
             </div>
           </div>
