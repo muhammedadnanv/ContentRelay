@@ -28,7 +28,7 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
     }
 
     const encodedEmail = encodeURIComponent(email);
-    const link = `${window.location.origin}?ref=${encodedEmail}`;
+    const link = `https://contentrelay.vercel.app/?ref=${encodedEmail}`;
     setReferralLink(link);
     
     toast({
