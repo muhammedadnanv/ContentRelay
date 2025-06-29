@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const VideoSection = () => {
   const handleWatchVideo = () => {
-    // You can replace this with your actual video URL
-    window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
+    window.open("https://youtube.com/shorts/aggHTtF3wvc?si=bJsbvdTpvFMf3UHf", "_blank");
   };
 
   return (
