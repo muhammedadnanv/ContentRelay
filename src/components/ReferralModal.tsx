@@ -53,7 +53,7 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
     }
   };
 
-  const shareMessage = "Transform your LinkedIn presence with AI-powered automation workflows! Save 5-10 hours weekly with Content Relay's professional automation setup.";
+  const shareMessage = "Transform your LinkedIn content with professional automation workflows! Get AI-powered LinkedIn content delivered as a complete service with Content Relay.";
 
   const shareOnTwitter = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(referralLink)}`;
@@ -72,9 +72,9 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-w-sm mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-[#1A1A1A]">
+          <DialogTitle className="text-lg sm:text-xl font-bold text-[#1A1A1A]">
             Share Content Relay 🚀
           </DialogTitle>
         </DialogHeader>
@@ -96,7 +96,7 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
 
           <Button 
             onClick={generateReferralLink}
-            className="w-full custom-gradient-bg text-white sketch-button border-2 border-black"
+            className="w-full custom-gradient-bg text-white sketch-button border-2 border-black text-sm sm:text-base"
           >
             Generate Referral Link
           </Button>
@@ -111,11 +111,11 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
                   <Input
                     value={referralLink}
                     readOnly
-                    className="rounded-r-none"
+                    className="rounded-r-none text-xs sm:text-sm"
                   />
                   <Button
                     onClick={copyToClipboard}
-                    className="rounded-l-none border-l-0"
+                    className="rounded-l-none border-l-0 px-2 sm:px-3"
                     variant="outline"
                   >
                     <Copy className="h-4 w-4" />
@@ -127,32 +127,32 @@ const ReferralModal = ({ isOpen, onClose }: ReferralModalProps) => {
                 <Label className="text-sm font-medium text-gray-700 mb-2 block">
                   Share on Social Media
                 </Label>
-                <div className="flex gap-2 justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <Button
                     onClick={shareOnTwitter}
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className="w-full text-xs sm:text-sm"
                   >
-                    <Twitter className="h-4 w-4 mr-1" />
+                    <Twitter className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     Twitter
                   </Button>
                   <Button
                     onClick={shareOnLinkedIn}
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className="w-full text-xs sm:text-sm"
                   >
-                    <Linkedin className="h-4 w-4 mr-1" />
+                    <Linkedin className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     LinkedIn
                   </Button>
                   <Button
                     onClick={shareOnWhatsApp}
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className="w-full text-xs sm:text-sm"
                   >
-                    <MessageCircle className="h-4 w-4 mr-1" />
+                    <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     WhatsApp
                   </Button>
                 </div>
