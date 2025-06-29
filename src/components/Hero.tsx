@@ -1,27 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
-import { useEffect } from "react";
 
 const Hero = () => {
   const handleTryContentRelay = () => {
     window.open("https://forms.gle/ktjPyVR4F7ryMVri6", "_blank");
   };
-
-  useEffect(() => {
-    // Load Instagram embed script
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = '//www.instagram.com/embed.js';
-    document.body.appendChild(script);
-    
-    return () => {
-      // Cleanup script on unmount
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
 
   return (
     <section className="relative flex items-center justify-center overflow-hidden py-8 sm:py-12 lg:py-16">
@@ -57,38 +41,6 @@ const Hero = () => {
               <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Get Your Content Automation
             </Button>
-          </div>
-          
-          {/* Instagram Embed */}
-          <div className="animate-fade-in px-2 sm:px-4" style={{
-            animationDelay: '0.6s'
-          }}>
-            <div className="max-w-4xl mx-auto">
-              <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-[#1A1A1A] mb-4 sm:mb-6">
-                See How Our LinkedIn Content Automation Works
-              </h3>
-              <div className="flex justify-center">
-                <div className="w-full max-w-lg sm:max-w-xl lg:max-w-2xl">
-                  <blockquote 
-                    className="instagram-media" 
-                    data-instgrm-permalink="https://www.instagram.com/reel/DK8uCT-SfaL/" 
-                    data-instgrm-version="14" 
-                    style={{
-                      background: '#FFF',
-                      border: '0',
-                      borderRadius: '3px',
-                      boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
-                      margin: '1px auto',
-                      maxWidth: '540px',
-                      minWidth: '280px',
-                      padding: '0',
-                      width: '100%'
-                    }}
-                  >
-                  </blockquote>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
