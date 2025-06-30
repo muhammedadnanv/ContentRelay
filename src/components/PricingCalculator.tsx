@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -196,7 +195,7 @@ const PricingCalculator = () => {
               </div>
               <Button 
                 className="w-full custom-gradient-bg text-white sketch-button border-2 border-black hover:bg-gradient-to-br hover:from-indigo-700 hover:to-purple-700 text-sm sm:text-base py-2 sm:py-3"
-                onClick={() => window.open('https://forms.gle/mTjevZH57N6PGvHdA', '_blank')}
+                onClick={() => window.open('https://wa.link/6fkbhs', '_blank')}
               >
                 Get Your Workflow Built 🎯
               </Button>
