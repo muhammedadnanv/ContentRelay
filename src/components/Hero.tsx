@@ -1,10 +1,9 @@
-
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 
 const Hero = () => {
   const handleTryContentRelay = () => {
-    window.open("https://forms.gle/ktjPyVR4F7ryMVri6", "_blank");
+    window.open("https://wa.link/i12pni", "_blank");
   };
 
   return (
