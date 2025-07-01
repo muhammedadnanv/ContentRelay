@@ -5,22 +5,30 @@ import { Button } from "@/components/ui/button";
 import { Linkedin, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Session, User } from "@supabase/supabase-js";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth event:', event, 'Session:', session);
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false);
         
         // Redirect authenticated users to home
         if (session?.user) {
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in.",
+          });
           navigate('/');
         }
       }
@@ -28,6 +36,7 @@ const Auth = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -39,11 +48,13 @@ const Auth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const signInWithLinkedIn = async () => {
     try {
       setLoading(true);
+      console.log('Attempting LinkedIn sign in...');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: {
@@ -53,9 +64,21 @@ const Auth = () => {
       
       if (error) {
         console.error('LinkedIn auth error:', error);
+        toast({
+          title: "Authentication Error",
+          description: error.message || "Failed to sign in with LinkedIn. Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        console.log('LinkedIn auth initiated:', data);
       }
     } catch (error) {
       console.error('LinkedIn signin error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -67,9 +90,24 @@ const Auth = () => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Sign out error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to sign out. Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Signed Out",
+          description: "You have been successfully signed out.",
+        });
       }
     } catch (error) {
       console.error('Sign out error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred during sign out.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -127,7 +165,7 @@ const Auth = () => {
                 variant="outline"
                 className="w-full"
               >
-                Sign Out
+                {loading ? 'Signing out...' : 'Sign Out'}
               </Button>
             </div>
           ) : (
@@ -146,6 +184,12 @@ const Auth = () => {
               <p className="text-xs text-gray-500 text-center">
                 By continuing, you agree to our Terms of Service and Privacy Policy.
               </p>
+              
+              {/* Debug info in development */}
+              <div className="text-xs text-gray-400 text-center">
+                <p>Having trouble signing in?</p>
+                <p>Make sure LinkedIn OAuth is enabled in your Supabase dashboard.</p>
+              </div>
             </div>
           )}
         </div>
