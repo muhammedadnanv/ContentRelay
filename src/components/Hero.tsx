@@ -1,10 +1,36 @@
 
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleTryContentRelay = () => {
-    window.open("https://wa.link/i12pni", "_blank");
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
   };
 
   return (
@@ -39,7 +65,7 @@ const Hero = () => {
               onClick={handleTryContentRelay}
             >
               <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Start AI Engagement Automation
+              {user ? 'Go to Dashboard' : 'Start AI Engagement Automation'}
             </Button>
           </div>
         </div>
