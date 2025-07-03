@@ -1,31 +1,43 @@
 
-import { Bot, Brain, Share2, Workflow } from "lucide-react";
+import { Bot, Brain, Share2, MessageCircle, UserPlus, Target } from "lucide-react";
 
 const ToolsSection = () => {
   const tools = [
     {
-      icon: Workflow,
-      name: "n8n",
-      description: "Workflow Automation",
-      color: "from-red-500 to-pink-500"
-    },
-    {
-      icon: Brain,
-      name: "Gemini",
-      description: "AI Content Generation",
-      color: "from-blue-500 to-purple-500"
-    },
-    {
       icon: Share2,
       name: "LinkedIn API",
-      description: "Publishing Platform",
+      description: "Direct Integration",
       color: "from-blue-600 to-blue-800"
     },
     {
-      icon: Bot,
-      name: "Custom AI Agent",
-      description: "Intelligence Layer",
+      icon: Brain,
+      name: "Advanced AI",
+      description: "Context Understanding",
+      color: "from-purple-500 to-indigo-500"
+    },
+    {
+      icon: MessageCircle,
+      name: "Comment Engine",
+      description: "Smart Interactions",
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      icon: UserPlus,
+      name: "Connection Bot",
+      description: "Automated Networking",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      icon: Target,
+      name: "Targeting System",
+      description: "Precision Outreach",
       color: "from-primary to-accent"
+    },
+    {
+      icon: Bot,
+      name: "Engagement AI",
+      description: "24/7 Activity",
+      color: "from-cyan-500 to-blue-500"
     }
   ];
 
@@ -35,14 +47,14 @@ const ToolsSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-text mb-6">
-              Powered by Best-in-Class Tools
+              Powered by Advanced AI Technology
             </h2>
             <p className="text-xl text-muted font-dm-sans max-w-2xl mx-auto">
-              We've integrated the most powerful platforms to deliver seamless automation
+              Our sophisticated AI engine understands context, writes like a human, and engages strategically
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool, index) => (
               <div 
                 key={tool.name}

@@ -1,37 +1,37 @@
 
-import { MessageCircle, Settings, PenTool, Zap, Share2 } from "lucide-react";
+import { Target, Brain, MessageCircle, UserPlus, TrendingUp } from "lucide-react";
 
 const HowItWorks = () => {
   const steps = [
     {
       step: "01",
-      icon: MessageCircle,
-      title: "Input Your Prompt",
-      description: "Simply describe what you want to share. Your expertise, insights, or story ideas."
+      icon: Target,
+      title: "Define Your Targets",
+      description: "Set your ideal prospects, industries, and engagement preferences for precise targeting."
     },
     {
       step: "02",
-      icon: Settings,
-      title: "AI Agent Structures",
-      description: "Our intelligent agent analyzes your prompt and creates a strategic content framework."
+      icon: Brain,
+      title: "AI Analyzes Content",
+      description: "Advanced AI scans LinkedIn posts, identifies engagement opportunities, and understands context."
     },
     {
       step: "03",
-      icon: PenTool,
-      title: "Gemini Writes",
-      description: "Advanced AI crafts compelling, professional content that matches your voice and style."
+      icon: MessageCircle,
+      title: "Writes Smart Comments",
+      description: "AI crafts hyper-relevant, engaging comments that add value and spark conversations."
     },
     {
       step: "04",
-      icon: Zap,
-      title: "n8n Automates",
-      description: "Sophisticated workflows handle scheduling, optimization, and timing for maximum impact."
+      icon: UserPlus,
+      title: "Sends Connection Requests",
+      description: "Automated personalized connection requests sent to your ideal prospects with custom messages."
     },
     {
       step: "05",
-      icon: Share2,
-      title: "LinkedIn API Publishes",
-      description: "Your content goes live seamlessly, maintaining consistent presence and engagement."
+      icon: TrendingUp,
+      title: "Scales Your Network",
+      description: "Daily engagement builds meaningful connections and expands your professional network automatically."
     }
   ];
 
@@ -41,10 +41,10 @@ const HowItWorks = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-space-grotesk font-bold text-text mb-4 sm:mb-6 px-4">
-              How Content Relay Works
+              How AI Engagement Works
             </h2>
             <p className="text-lg sm:text-xl text-muted font-dm-sans max-w-2xl mx-auto px-4">
-              Five intelligent steps that transform your ideas into professional LinkedIn content
+              Five intelligent steps that transform your LinkedIn presence into a networking powerhouse
             </p>
           </div>
           

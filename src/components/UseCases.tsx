@@ -1,37 +1,37 @@
 
-import { MessageSquare, Calendar, TrendingUp, Users, BarChart3, Clock } from "lucide-react";
+import { MessageSquare, UserPlus, TrendingUp, Users, Zap, Clock, Target, Brain } from "lucide-react";
 
 const UseCases = () => {
   const useCases = [
     {
       icon: MessageSquare,
-      title: "Thought Leadership",
-      description: "Share insights and expertise consistently to build authority in your field"
+      title: "Smart Comments",
+      description: "AI writes contextually relevant comments that spark meaningful conversations"
     },
     {
-      icon: Calendar,
-      title: "Content Consistency",
-      description: "Never miss a post with intelligent scheduling that adapts to your audience"
+      icon: UserPlus,
+      title: "Strategic Connections",
+      description: "Automatically send personalized connection requests to your ideal prospects"
     },
     {
-      icon: TrendingUp,
-      title: "Growth Acceleration",
-      description: "Scale your LinkedIn presence without scaling your time investment"
+      icon: Zap,
+      title: "Daily Engagement",
+      description: "Maintain consistent LinkedIn presence with automated daily interactions"
     },
     {
-      icon: Users,
-      title: "Audience Engagement",
-      description: "Build meaningful connections through strategic, personalized content"
+      icon: Target,
+      title: "Targeted Outreach",
+      description: "Focus on specific industries, roles, or companies for maximum relevance"
     },
     {
-      icon: BarChart3,
-      title: "Performance Optimization",
-      description: "AI-driven insights help you understand what resonates with your network"
+      icon: Brain,
+      title: "AI-Powered Insights",
+      description: "Advanced algorithms analyze posts to craft the most engaging responses"
     },
     {
       icon: Clock,
-      title: "Time Recovery",
-      description: "Reclaim 5-10 hours weekly for high-impact activities that drive results"
+      title: "Time Freedom",
+      description: "Reclaim 3-5 hours daily while your AI handles LinkedIn networking"
     }
   ];
 
@@ -41,10 +41,10 @@ const UseCases = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6">
-              Unlock Your LinkedIn Potential
+              Transform Your LinkedIn Networking
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From content creation to audience building, Content Relay handles the heavy lifting
+              From comments to connections, our AI handles every aspect of LinkedIn engagement
             </p>
           </div>
           
@@ -74,4 +74,3 @@ const UseCases = () => {
 };
 
 export default UseCases;
-

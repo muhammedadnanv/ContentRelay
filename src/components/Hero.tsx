@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 
@@ -12,20 +13,20 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Service Type Badge */}
           <div className="inline-block bg-indigo-100 text-indigo-800 px-3 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 animate-fade-in">
-            LinkedIn Content Writing Automation Service
+            AI-Powered LinkedIn Engagement Automation
           </div>
           
           {/* Main Headline */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 leading-tight animate-fade-in px-2">
-            Your LinkedIn Content.
-            <span className="block text-indigo-600">Automated Daily.</span>
+            AI Comments, Connects & Engages.
+            <span className="block text-indigo-600">Daily. Automatically.</span>
           </h1>
           
           {/* Subheadline */}
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 lg:mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in px-4" style={{
             animationDelay: '0.2s'
           }}>
-            Get professional LinkedIn content writing automation workflows delivered as a service. We build and manage your AI-powered content system - you just approve and post.
+            Our AI writes hyper-relevant comments, sends strategic connection requests, and maintains daily engagement on LinkedIn. Scale your networking while you focus on closing deals.
           </p>
           
           {/* CTA Button */}
@@ -38,7 +39,7 @@ const Hero = () => {
               onClick={handleTryContentRelay}
             >
               <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Get Your Content Automation
+              Start AI Engagement Automation
             </Button>
           </div>
         </div>
