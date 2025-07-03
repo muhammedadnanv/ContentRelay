@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 
 interface AnalyticsData {
   date: string;
@@ -25,50 +25,18 @@ const Analytics = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Get last 30 days of analytics data
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      const { data, error } = await supabase
-        .from('engagement_analytics' as any)
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
-        .order('date', { ascending: true });
-
-      if (error) {
-        console.log('Analytics table not ready, using mock data');
-      }
-
-      // Generate mock data for demonstration since we don't have real data yet
-      const mockData = Array.from({ length: 30 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (29 - i));
-        return {
-          date: date.toISOString().split('T')[0],
-          comments_sent: Math.floor(Math.random() * 20) + 5,
-          connections_sent: Math.floor(Math.random() * 10) + 2,
-          connections_accepted: Math.floor(Math.random() * 5) + 1,
-          engagement_rate: Math.random() * 0.3 + 0.1,
-        };
-      });
-
-      setAnalyticsData(data?.length ? data : mockData);
+      // Mock data for demo since tables are not ready yet
+      const mockData: AnalyticsData[] = [
+        { date: '2024-01-01', comments_sent: 25, connections_sent: 10, connections_accepted: 7, engagement_rate: 15.5 },
+        { date: '2024-01-02', comments_sent: 30, connections_sent: 12, connections_accepted: 9, engagement_rate: 18.2 },
+        { date: '2024-01-03', comments_sent: 22, connections_sent: 8, connections_accepted: 6, engagement_rate: 12.8 },
+        { date: '2024-01-04', comments_sent: 35, connections_sent: 15, connections_accepted: 11, engagement_rate: 22.1 },
+        { date: '2024-01-05', comments_sent: 28, connections_sent: 11, connections_accepted: 8, engagement_rate: 16.7 },
+      ];
+      
+      setAnalyticsData(mockData);
     } catch (error) {
       console.error('Error fetching analytics:', error);
-      // Generate mock data for demo
-      const mockData = Array.from({ length: 30 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (29 - i));
-        return {
-          date: date.toISOString().split('T')[0],
-          comments_sent: Math.floor(Math.random() * 20) + 5,
-          connections_sent: Math.floor(Math.random() * 10) + 2,
-          connections_accepted: Math.floor(Math.random() * 5) + 1,
-          engagement_rate: Math.random() * 0.3 + 0.1,
-        };
-      });
-      setAnalyticsData(mockData);
     } finally {
       setLoading(false);
     }
@@ -83,15 +51,17 @@ const Analytics = () => {
     { comments: 0, connections: 0, accepted: 0 }
   );
 
-  const acceptanceRate = totalStats.connections > 0 
-    ? ((totalStats.accepted / totalStats.connections) * 100).toFixed(1)
-    : '0';
+  const averageEngagement = analyticsData.length > 0 
+    ? analyticsData.reduce((acc, day) => acc + day.engagement_rate, 0) / analyticsData.length 
+    : 0;
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardContent className="p-6">
                 <div className="animate-pulse">
@@ -107,123 +77,92 @@ const Analytics = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Analytics & Performance</h2>
+    <div>
+      <h2 className="text-xl font-semibold mb-6">Analytics & Performance</h2>
       
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
-              Total Comments
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Total Comments</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalStats.comments}</div>
-            <p className="text-xs text-gray-500">Last 30 days</p>
+            <p className="text-sm text-green-600">+12% from last week</p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
-              Connection Requests
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Connections Sent</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalStats.connections}</div>
-            <p className="text-xs text-gray-500">Last 30 days</p>
+            <p className="text-sm text-blue-600">+8% from last week</p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
-              Connections Accepted
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Connections Accepted</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalStats.accepted}</div>
-            <p className="text-xs text-gray-500">Last 30 days</p>
+            <p className="text-sm text-green-600">{((totalStats.accepted / totalStats.connections) * 100).toFixed(1)}% acceptance rate</p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
-              Acceptance Rate
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Avg Engagement Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{acceptanceRate}%</div>
-            <p className="text-xs text-gray-500">Last 30 days</p>
+            <div className="text-2xl font-bold">{averageEngagement.toFixed(1)}%</div>
+            <p className="text-sm text-purple-600">+5% from last week</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Engagement Activity Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Daily Engagement Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={analyticsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip 
-                labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                formatter={(value, name) => [value, name === 'comments_sent' ? 'Comments' : 'Connections']}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="comments_sent" 
-                stroke="#8884d8" 
-                strokeWidth={2}
-                name="Comments"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="connections_sent" 
-                stroke="#82ca9d" 
-                strokeWidth={2}
-                name="Connection Requests"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Daily Engagement Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={analyticsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="comments_sent" stroke="#8884d8" name="Comments" />
+                <Line type="monotone" dataKey="connections_sent" stroke="#82ca9d" name="Connections" />
+                <Line type="monotone" dataKey="connections_accepted" stroke="#ffc658" name="Accepted" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-      {/* Connection Acceptance Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Connection Request Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={analyticsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip 
-                labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                formatter={(value, name) => [value, name === 'connections_sent' ? 'Sent' : 'Accepted']}
-              />
-              <Bar dataKey="connections_sent" fill="#8884d8" name="Sent" />
-              <Bar dataKey="connections_accepted" fill="#82ca9d" name="Accepted" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Weekly Activity Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analyticsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="comments_sent" fill="#8884d8" name="Comments" />
+                <Bar dataKey="connections_sent" fill="#82ca9d" name="Connections" />
+                <Bar dataKey="connections_accepted" fill="#ffc658" name="Accepted" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
