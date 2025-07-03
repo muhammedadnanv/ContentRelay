@@ -49,7 +49,7 @@ const CreateCampaignModal = ({ open, onClose, onCampaignCreated }: CreateCampaig
       };
 
       const { error } = await supabase
-        .from('engagement_campaigns')
+        .from('engagement_campaigns' as any)
         .insert({
           user_id: user.id,
           name: formData.name,

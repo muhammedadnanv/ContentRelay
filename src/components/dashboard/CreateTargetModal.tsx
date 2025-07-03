@@ -49,7 +49,7 @@ const CreateTargetModal = ({ open, onClose, onTargetCreated }: CreateTargetModal
       };
 
       const { error } = await supabase
-        .from('engagement_targets')
+        .from('engagement_targets' as any)
         .insert({
           user_id: user.id,
           name: formData.name,

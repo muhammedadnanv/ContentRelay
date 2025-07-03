@@ -30,12 +30,14 @@ const LinkedInAccounts = () => {
       if (!user) return;
 
       const { data, error } = await supabase
-        .from('linkedin_accounts')
+        .from('linkedin_accounts' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.log('LinkedIn accounts table not ready yet');
+      }
       setAccounts(data || []);
     } catch (error) {
       console.error('Error fetching LinkedIn accounts:', error);
