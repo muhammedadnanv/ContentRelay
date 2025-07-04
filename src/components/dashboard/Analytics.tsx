@@ -1,69 +1,95 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 
 const Analytics = () => {
-  const weeklyData = [
-    { name: 'Mon', comments: 12, connections: 8, likes: 25 },
-    { name: 'Tue', comments: 15, connections: 12, likes: 32 },
-    { name: 'Wed', comments: 8, connections: 6, likes: 18 },
-    { name: 'Thu', comments: 20, connections: 15, likes: 45 },
-    { name: 'Fri', comments: 18, connections: 10, likes: 38 },
-    { name: 'Sat', comments: 5, connections: 3, likes: 12 },
-    { name: 'Sun', comments: 7, connections: 4, likes: 15 },
+  const engagementData = [
+    { date: "2024-01", comments: 45, connections: 12, likes: 89 },
+    { date: "2024-02", comments: 52, connections: 18, likes: 103 },
+    { date: "2024-03", comments: 38, connections: 15, likes: 76 },
+    { date: "2024-04", comments: 67, connections: 22, likes: 134 },
+    { date: "2024-05", comments: 59, connections: 19, likes: 118 },
+    { date: "2024-06", comments: 71, connections: 25, likes: 142 },
   ];
 
-  const engagementTrend = [
-    { name: 'Week 1', rate: 65 },
-    { name: 'Week 2', rate: 72 },
-    { name: 'Week 3', rate: 68 },
-    { name: 'Week 4', rate: 78 },
+  const responseRateData = [
+    { campaign: "B2B SaaS", rate: 78 },
+    { campaign: "Fintech", rate: 65 },
+    { campaign: "Healthcare", rate: 82 },
+    { campaign: "E-commerce", rate: 71 },
   ];
 
   const industryData = [
-    { name: 'SaaS', value: 35, color: '#8884d8' },
-    { name: 'Fintech', value: 25, color: '#82ca9d' },
-    { name: 'AI/ML', value: 20, color: '#ffc658' },
-    { name: 'E-commerce', value: 12, color: '#ff7300' },
-    { name: 'Other', value: 8, color: '#00ff88' },
+    { name: "B2B SaaS", value: 35, color: "#8884d8" },
+    { name: "Fintech", value: 25, color: "#82ca9d" },
+    { name: "Healthcare", value: 20, color: "#ffc658" },
+    { name: "E-commerce", value: 15, color: "#ff7c7c" },
+    { name: "Other", value: 5, color: "#8dd1e1" },
   ];
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
-      
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Engagements</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">1,247</div>
+            <p className="text-xs text-muted-foreground">+12% from last month</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Response Rate</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">74%</div>
+            <p className="text-xs text-muted-foreground">+8% from last month</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">New Connections</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">189</div>
+            <p className="text-xs text-muted-foreground">+15% from last month</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Campaigns</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">6</div>
+            <p className="text-xs text-muted-foreground">2 paused</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Weekly Activity</CardTitle>
+            <CardTitle>Engagement Over Time</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={weeklyData}>
+              <LineChart data={engagementData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="comments" fill="#8884d8" name="Comments" />
-                <Bar dataKey="connections" fill="#82ca9d" name="Connections" />
-                <Bar dataKey="likes" fill="#ffc658" name="Likes" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Engagement Rate Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={engagementTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="rate" stroke="#8884d8" strokeWidth={2} />
+                <Line type="monotone" dataKey="comments" stroke="#8884d8" strokeWidth={2} />
+                <Line type="monotone" dataKey="connections" stroke="#82ca9d" strokeWidth={2} />
+                <Line type="monotone" dataKey="likes" stroke="#ffc658" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -71,7 +97,24 @@ const Analytics = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Target Industries</CardTitle>
+            <CardTitle>Response Rate by Campaign</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={responseRateData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="campaign" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="rate" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Industry Distribution</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -98,26 +141,24 @@ const Analytics = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Performance Metrics</CardTitle>
+            <CardTitle>Recent Performance</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">3.2x</div>
-                <div className="text-sm text-blue-600">Response Rate</div>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">89%</div>
-                <div className="text-sm text-green-600">Connection Accept Rate</div>
-              </div>
-              <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">156</div>
-                <div className="text-sm text-purple-600">Total Conversations</div>
-              </div>
-              <div className="text-center p-4 bg-orange-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">23</div>
-                <div className="text-sm text-orange-600">Qualified Leads</div>
-              </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Comments this week</span>
+              <span className="font-medium">127</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Connections this week</span>
+              <span className="font-medium">34</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Average response time</span>
+              <span className="font-medium">2.3 hours</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Best performing campaign</span>
+              <span className="font-medium">Healthcare</span>
             </div>
           </CardContent>
         </Card>

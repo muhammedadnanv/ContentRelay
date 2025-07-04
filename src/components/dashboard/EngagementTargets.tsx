@@ -2,99 +2,113 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Users } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { MessageCircle, UserPlus, MoreHorizontal } from "lucide-react";
+import CreateTargetModal from "./CreateTargetModal";
 
 const EngagementTargets = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [targets] = useState([
     {
       id: 1,
       name: "Sarah Johnson",
-      title: "VP of Marketing",
-      company: "TechCorp",
-      industry: "SaaS",
+      company: "TechFlow Solutions",
+      position: "VP of Marketing",
+      industry: "B2B SaaS",
       status: "active",
       lastEngagement: "2 days ago",
+      engagementCount: 3,
     },
     {
       id: 2,
       name: "Mike Chen",
-      title: "Founder & CEO",
       company: "StartupX",
+      position: "CEO",
       industry: "Fintech",
       status: "pending",
       lastEngagement: "1 week ago",
+      engagementCount: 1,
     },
     {
       id: 3,
       name: "Emma Davis",
-      title: "Head of Growth",
       company: "InnovateLab",
-      industry: "AI/ML",
-      status: "active",
-      lastEngagement: "1 day ago",
+      position: "CTO",
+      industry: "Healthcare",
+      status: "connected",
+      lastEngagement: "3 hours ago",
+      engagementCount: 7,
     },
   ]);
 
-  const filteredTargets = targets.filter(target =>
-    target.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    target.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    target.industry.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "connected":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Engagement Targets</h2>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Target
-        </Button>
+        <CreateTargetModal />
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Label htmlFor="search" className="sr-only">Search targets</Label>
-            <Input
-              id="search"
-              placeholder="Search by name, company, or industry..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
-            />
-          </div>
-        </CardHeader>
-      </Card>
-
-      <div className="grid gap-4">
-        {filteredTargets.map((target) => (
+      <div className="grid gap-6">
+        {targets.map((target) => (
           <Card key={target.id}>
-            <CardContent className="pt-6">
+            <CardHeader>
               <div className="flex justify-between items-start">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full p-2">
-                    <Users className="h-6 w-6 text-white" />
-                  </div>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarFallback>
+                      {target.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
-                    <h3 className="font-semibold text-lg">{target.name}</h3>
-                    <p className="text-muted-foreground">{target.title}</p>
-                    <p className="text-sm text-muted-foreground">{target.company} • {target.industry}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Last engagement: {target.lastEngagement}
+                    <CardTitle className="text-lg">{target.name}</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {target.position} at {target.company}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {target.industry}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={target.status === "active" ? "default" : "secondary"}>
+                  <Badge className={getStatusColor(target.status)}>
                     {target.status}
                   </Badge>
+                  <Button variant="ghost" size="sm">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <MessageCircle className="h-4 w-4" />
+                    <span>{target.engagementCount} engagements</span>
+                  </div>
+                  <span>Last: {target.lastEngagement}</span>
+                </div>
+                <div className="flex gap-2">
                   <Button variant="outline" size="sm">
-                    View Profile
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Comment
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    Connect
                   </Button>
                 </div>
               </div>
@@ -102,18 +116,15 @@ const EngagementTargets = () => {
           </Card>
         ))}
 
-        {filteredTargets.length === 0 && (
+        {targets.length === 0 && (
           <Card>
             <CardContent className="text-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No targets found</h3>
+              <UserPlus className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No engagement targets yet</h3>
               <p className="text-muted-foreground mb-4">
-                {searchTerm ? "Try adjusting your search terms." : "Add your first engagement target to get started."}
+                Add LinkedIn profiles you want to engage with automatically.
               </p>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Target
-              </Button>
+              <CreateTargetModal />
             </CardContent>
           </Card>
         )}
