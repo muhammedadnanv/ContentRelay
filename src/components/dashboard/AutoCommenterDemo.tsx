@@ -1,234 +1,249 @@
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Bot, Zap, MessageSquare } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sparkles, Bot, User, Building2 } from 'lucide-react';
 import CommentPreview from './CommentPreview';
 
 const AutoCommenterDemo = () => {
-  const [showDemo, setShowDemo] = useState(false);
-  const [demoData, setDemoData] = useState({
-    postContent: '',
-    authorName: '',
-    authorCompany: '',
-    authorIndustry: '',
-    authorPosition: '',
-    userIndustry: '',
-    userCompany: '',
-    userExpertise: '',
-    userRole: ''
+  const [postContent, setPostContent] = useState('');
+  const [authorProfile, setAuthorProfile] = useState({
+    name: '',
+    company: '',
+    industry: '',
+    position: ''
   });
+  const [userContext, setUserContext] = useState({
+    industry: '',
+    company: '',
+    expertise: '',
+    role: ''
+  });
+  const [showPreview, setShowPreview] = useState(false);
 
-  const mockPostContent = `🚀 Excited to share that our AI-powered customer service platform just reduced response times by 78% for our enterprise clients! 
+  const handleDemo = () => {
+    // Set demo data
+    setPostContent(`Just had an incredible breakthrough with our AI automation platform! 🚀 
 
-The key was implementing contextual understanding that goes beyond keyword matching. Our system now grasps customer intent, emotional tone, and urgency levels to provide truly personalized responses.
+After months of development, we've finally cracked the code on hyper-personalized outreach that actually converts. Our latest feature analyzes LinkedIn profiles in real-time and generates contextually relevant messages that feel genuinely human.
 
-What's your experience with AI in customer service? Are you seeing similar improvements in your industry?
+The results? 340% increase in response rates and 89% acceptance rate on connection requests. 
 
-#AI #CustomerService #Innovation #TechLeadership`;
+The key insight: Generic outreach is dead. People can smell automation from a mile away. But when you combine AI intelligence with genuine personalization, magic happens.
 
-  const mockData = {
-    postContent: mockPostContent,
-    authorName: 'Sarah Chen',
-    authorCompany: 'TechForward Solutions',
-    authorIndustry: 'Software Technology',
-    authorPosition: 'VP of Product',
-    userIndustry: 'SaaS',
-    userCompany: 'Growth Analytics Co',
-    userExpertise: 'Customer Success, AI Implementation',
-    userRole: 'Head of Customer Success'
+What's your experience with AI-powered outreach? Are you seeing similar results or facing different challenges?
+
+#AI #Automation #LinkedInMarketing #B2B #SaaS`);
+    
+    setAuthorProfile({
+      name: 'Sarah Chen', 
+      company: 'TechFlow Solutions',
+      industry: 'B2B SaaS',
+      position: 'VP of Marketing'
+    });
+    
+    setUserContext({
+      industry: 'Marketing Technology',
+      company: 'Content Relay',
+      expertise: 'AI-powered LinkedIn automation',
+      role: 'Growth Marketing Manager'
+    });
+    
+    setShowPreview(true);
   };
 
-  const handleTryDemo = () => {
-    setDemoData(mockData);
-    setShowDemo(true);
-  };
-
-  const handleCustomDemo = () => {
-    if (demoData.postContent && demoData.authorName) {
-      setShowDemo(true);
-    }
-  };
-
-  if (showDemo) {
-    return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={() => setShowDemo(false)}
-          >
-            ← Back to Setup
-          </Button>
-        </div>
-        <CommentPreview
-          postContent={demoData.postContent}
-          authorProfile={{
-            name: demoData.authorName,
-            company: demoData.authorCompany,
-            industry: demoData.authorIndustry,
-            position: demoData.authorPosition
-          }}
-          userContext={{
-            industry: demoData.userIndustry,
-            company: demoData.userCompany,
-            expertise: demoData.userExpertise,
-            role: demoData.userRole
-          }}
-          campaignId="demo-campaign"
-        />
-      </div>
-    );
-  }
+  const isReadyForPreview = postContent && authorProfile.name && authorProfile.company && 
+                           userContext.industry && userContext.company;
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bot className="h-6 w-6 text-purple-600" />
-            AI Auto-Commenter Demo
-          </CardTitle>
-          <p className="text-gray-600">
-            Experience how our AI generates hyper-relevant LinkedIn comments using Google's Gemini API
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <MessageSquare className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-              <div className="font-medium">Context Analysis</div>
-              <div className="text-sm text-gray-600">Understands post content & author profile</div>
-            </div>
-            <div className="text-center p-4 bg-indigo-50 rounded-lg">
-              <Zap className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
-              <div className="font-medium">Hyper-Relevant</div>
-              <div className="text-sm text-gray-600">Generates industry-specific insights</div>
-            </div>
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <Bot className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <div className="font-medium">AI-Powered</div>
-              <div className="text-sm text-gray-600">Uses Google Gemini for intelligence</div>
-            </div>
-          </div>
+      <div className="text-center">
+        <h2 className="text-3xl font-bold mb-4">AI Comment Generator Demo</h2>
+        <p className="text-gray-600 mb-6">
+          See how our AI creates hyper-relevant LinkedIn comments that drive real engagement
+        </p>
+        <Button onClick={handleDemo} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+          <Sparkles className="h-4 w-4 mr-2" />
+          Try Demo with Sample Data
+        </Button>
+      </div>
 
-          <div className="flex gap-4 justify-center">
-            <Button
-              onClick={handleTryDemo}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-            >
-              Try Quick Demo
-            </Button>
-            <Button variant="outline">
-              Setup Custom Demo
-            </Button>
-          </div>
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Input Form */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-blue-600" />
+                LinkedIn Post Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="post-content">Post Content</Label>
+                <Textarea
+                  id="post-content"
+                  placeholder="Paste the LinkedIn post content here..."
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                  className="min-h-[120px]"
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="border-t pt-6">
-            <h3 className="font-medium mb-4">Custom Demo Setup</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-green-600" />
+                Author Profile
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="authorName">Author Name</Label>
+                  <Label htmlFor="author-name">Author Name</Label>
                   <Input
-                    id="authorName"
-                    value={demoData.authorName}
-                    onChange={(e) => setDemoData({...demoData, authorName: e.target.value})}
-                    placeholder="e.g., Sarah Chen"
+                    id="author-name"
+                    placeholder="e.g., John Smith"
+                    value={authorProfile.name}
+                    onChange={(e) => setAuthorProfile({...authorProfile, name: e.target.value})}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="authorCompany">Author Company</Label>
+                  <Label htmlFor="author-company">Company</Label>
                   <Input
-                    id="authorCompany"
-                    value={demoData.authorCompany}
-                    onChange={(e) => setDemoData({...demoData, authorCompany: e.target.value})}
-                    placeholder="e.g., TechForward Solutions"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="authorIndustry">Author Industry</Label>
-                  <Input
-                    id="authorIndustry"
-                    value={demoData.authorIndustry}
-                    onChange={(e) => setDemoData({...demoData, authorIndustry: e.target.value})}
-                    placeholder="e.g., Software Technology"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="authorPosition">Author Position</Label>
-                  <Input
-                    id="authorPosition"
-                    value={demoData.authorPosition}
-                    onChange={(e) => setDemoData({...demoData, authorPosition: e.target.value})}
-                    placeholder="e.g., VP of Product"
+                    id="author-company"
+                    placeholder="e.g., TechCorp Inc"
+                    value={authorProfile.company}
+                    onChange={(e) => setAuthorProfile({...authorProfile, company: e.target.value})}
                   />
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="userIndustry">Your Industry</Label>
+                  <Label htmlFor="author-position">Position</Label>
                   <Input
-                    id="userIndustry"
-                    value={demoData.userIndustry}
-                    onChange={(e) => setDemoData({...demoData, userIndustry: e.target.value})}
-                    placeholder="e.g., SaaS"
+                    id="author-position"
+                    placeholder="e.g., CEO, VP Marketing"
+                    value={authorProfile.position}
+                    onChange={(e) => setAuthorProfile({...authorProfile, position: e.target.value})}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="userCompany">Your Company</Label>
+                  <Label htmlFor="author-industry">Industry</Label>
+                  <Select value={authorProfile.industry} onValueChange={(value) => setAuthorProfile({...authorProfile, industry: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="saas">B2B SaaS</SelectItem>
+                      <SelectItem value="fintech">Fintech</SelectItem>
+                      <SelectItem value="ecommerce">E-commerce</SelectItem>
+                      <SelectItem value="healthcare">Healthcare</SelectItem>
+                      <SelectItem value="consulting">Consulting</SelectItem>
+                      <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-purple-600" />
+                Your Context
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="user-industry">Your Industry</Label>
                   <Input
-                    id="userCompany"
-                    value={demoData.userCompany}
-                    onChange={(e) => setDemoData({...demoData, userCompany: e.target.value})}
-                    placeholder="e.g., Growth Analytics Co"
+                    id="user-industry"
+                    placeholder="e.g., Marketing Tech"
+                    value={userContext.industry}
+                    onChange={(e) => setUserContext({...userContext, industry: e.target.value})}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="userRole">Your Role</Label>
+                  <Label htmlFor="user-company">Your Company</Label>
                   <Input
-                    id="userRole"
-                    value={demoData.userRole}
-                    onChange={(e) => setDemoData({...demoData, userRole: e.target.value})}
-                    placeholder="e.g., Head of Customer Success"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="userExpertise">Your Expertise</Label>
-                  <Input
-                    id="userExpertise"
-                    value={demoData.userExpertise}
-                    onChange={(e) => setDemoData({...demoData, userExpertise: e.target.value})}
-                    placeholder="e.g., Customer Success, AI Implementation"
+                    id="user-company"
+                    placeholder="e.g., Content Relay"
+                    value={userContext.company}
+                    onChange={(e) => setUserContext({...userContext, company: e.target.value})}
                   />
                 </div>
               </div>
-            </div>
-            <div className="mt-4">
-              <Label htmlFor="postContent">LinkedIn Post Content</Label>
-              <Textarea
-                id="postContent"
-                value={demoData.postContent}
-                onChange={(e) => setDemoData({...demoData, postContent: e.target.value})}
-                placeholder="Paste the LinkedIn post content here..."
-                rows={4}
-              />
-            </div>
-            <div className="mt-4">
-              <Button
-                onClick={handleCustomDemo}
-                disabled={!demoData.postContent || !demoData.authorName}
-                className="w-full"
-              >
-                Generate Custom Demo
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="user-expertise">Your Expertise</Label>
+                  <Input
+                    id="user-expertise"
+                    placeholder="e.g., AI automation"
+                    value={userContext.expertise}
+                    onChange={(e) => setUserContext({...userContext, expertise: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="user-role">Your Role</Label>
+                  <Input
+                    id="user-role"
+                    placeholder="e.g., Growth Manager"
+                    value={userContext.role}
+                    onChange={(e) => setUserContext({...userContext, role: e.target.value})}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button 
+            onClick={() => setShowPreview(true)}
+            disabled={!isReadyForPreview}
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+            size="lg"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            Generate AI Comment
+          </Button>
+        </div>
+
+        {/* Preview Section */}
+        <div>
+          {showPreview && isReadyForPreview ? (
+            <CommentPreview
+              postContent={postContent}
+              authorProfile={authorProfile}
+              userContext={userContext}
+              campaignId="demo-campaign"
+            />
+          ) : (
+            <Card className="h-full flex items-center justify-center">
+              <CardContent className="text-center py-12">
+                <Bot className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">AI Comment Preview</h3>
+                <p className="text-gray-600 mb-4">
+                  Fill in the form to see your AI-generated comment
+                </p>
+                <div className="text-sm text-gray-500">
+                  ✓ Enter post content<br/>
+                  ✓ Add author details<br/>
+                  ✓ Set your context
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

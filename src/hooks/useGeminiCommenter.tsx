@@ -29,6 +29,8 @@ export const useGeminiCommenter = () => {
   ) => {
     setLoading(true);
     try {
+      console.log('Generating comment with Gemini API...');
+      
       const { data, error } = await supabase.functions.invoke('linkedin-auto-commenter', {
         body: {
           action: 'generate_comment',
@@ -39,7 +41,14 @@ export const useGeminiCommenter = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (!data || !data.comment) {
+        throw new Error('Invalid response from AI service');
+      }
 
       toast({
         title: "Comment Generated",
@@ -51,7 +60,7 @@ export const useGeminiCommenter = () => {
       console.error('Error generating comment:', error);
       toast({
         title: "Error",
-        description: "Failed to generate comment. Please check your Gemini API configuration.",
+        description: error.message || "Failed to generate comment. Please check your Gemini API configuration.",
         variant: "destructive",
       });
       throw error;
@@ -67,6 +76,8 @@ export const useGeminiCommenter = () => {
   ) => {
     setLoading(true);
     try {
+      console.log('Generating connection message with Gemini API...');
+      
       const { data, error } = await supabase.functions.invoke('linkedin-auto-commenter', {
         body: {
           action: 'generate_connection_message',
@@ -76,7 +87,14 @@ export const useGeminiCommenter = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (!data || !data.connectionMessage) {
+        throw new Error('Invalid response from AI service');
+      }
 
       toast({
         title: "Connection Message Generated",
@@ -88,7 +106,7 @@ export const useGeminiCommenter = () => {
       console.error('Error generating connection message:', error);
       toast({
         title: "Error",
-        description: "Failed to generate connection message. Please check your Gemini API configuration.",
+        description: error.message || "Failed to generate connection message. Please check your Gemini API configuration.",
         variant: "destructive",
       });
       throw error;
@@ -100,6 +118,8 @@ export const useGeminiCommenter = () => {
   const processDailyEngagement = async (campaignId: string) => {
     setLoading(true);
     try {
+      console.log('Processing daily engagement...');
+      
       const { data, error } = await supabase.functions.invoke('linkedin-auto-commenter', {
         body: {
           action: 'process_daily_engagement',
@@ -107,7 +127,10 @@ export const useGeminiCommenter = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
 
       toast({
         title: "Daily Engagement Processed",
@@ -119,7 +142,7 @@ export const useGeminiCommenter = () => {
       console.error('Error processing daily engagement:', error);
       toast({
         title: "Error",
-        description: "Failed to process daily engagement. Please try again.",
+        description: error.message || "Failed to process daily engagement. Please try again.",
         variant: "destructive",
       });
       throw error;

@@ -25,7 +25,14 @@ serve(async (req) => {
     console.log('LinkedIn Auto-Commenter:', { action, campaignId });
 
     if (!geminiApiKey) {
-      throw new Error('Gemini API key not configured');
+      console.error('Gemini API key not configured');
+      return new Response(
+        JSON.stringify({ error: 'Gemini API key not configured. Please add GEMINI_API_KEY to your Supabase secrets.' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     switch (action) {
@@ -70,6 +77,7 @@ USER CONTEXT:
 - Industry: ${userContext.industry}
 - Company: ${userContext.company}
 - Expertise: ${userContext.expertise}
+- Role: ${userContext.role}
 
 REQUIREMENTS:
 1. Make it feel genuine and personal
@@ -79,44 +87,60 @@ REQUIREMENTS:
 5. Use a conversational, professional tone
 6. Reference specific points from the post
 7. Avoid generic responses like "Great post!"
+8. Include a thoughtful question or insight
+9. Show authentic interest in the topic
 
 Generate a comment that shows you actually read and understood the post while positioning the commenter as knowledgeable in their field.
 `;
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 1024,
-      }
-    }),
-  });
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      }),
+    });
 
-  const data = await response.json();
-  const generatedComment = data.candidates[0].content.parts[0].text.trim();
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+    }
 
-  console.log('Generated comment:', generatedComment);
+    const data = await response.json();
+    
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      throw new Error('Invalid response from Gemini API');
+    }
 
-  return new Response(
-    JSON.stringify({ 
-      comment: generatedComment,
-      postContent,
-      authorProfile,
-      timestamp: new Date().toISOString()
-    }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
+    const generatedComment = data.candidates[0].content.parts[0].text.trim();
+
+    console.log('Generated comment:', generatedComment);
+
+    return new Response(
+      JSON.stringify({ 
+        comment: generatedComment,
+        postContent,
+        authorProfile,
+        timestamp: new Date().toISOString()
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error calling Gemini API:', error);
+    throw new Error(`Failed to generate comment: ${error.message}`);
+  }
 }
 
 async function generateConnectionMessage(authorProfile: any, userContext: any, campaignId: string) {
@@ -133,6 +157,7 @@ USER CONTEXT:
 - Industry: ${userContext.industry}
 - Company: ${userContext.company}
 - Role: ${userContext.role}
+- Expertise: ${userContext.expertise}
 
 REQUIREMENTS:
 1. Keep it under 300 characters (LinkedIn limit)
@@ -141,41 +166,56 @@ REQUIREMENTS:
 4. Professional but friendly tone
 5. No generic templates
 6. Include a clear value proposition
+7. Make it feel personal and authentic
 
 Generate a connection message that feels personal and strategic.
 `;
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.8,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 512,
-      }
-    }),
-  });
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.8,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 512,
+        }
+      }),
+    });
 
-  const data = await response.json();
-  const connectionMessage = data.candidates[0].content.parts[0].text.trim();
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+    }
 
-  return new Response(
-    JSON.stringify({ 
-      connectionMessage,
-      authorProfile,
-      timestamp: new Date().toISOString()
-    }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
+    const data = await response.json();
+    
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      throw new Error('Invalid response from Gemini API');
+    }
+
+    const connectionMessage = data.candidates[0].content.parts[0].text.trim();
+
+    return new Response(
+      JSON.stringify({ 
+        connectionMessage,
+        authorProfile,
+        timestamp: new Date().toISOString()
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error calling Gemini API:', error);
+    throw new Error(`Failed to generate connection message: ${error.message}`);
+  }
 }
 
 async function processDailyEngagement(campaignId: string, supabase: any) {
