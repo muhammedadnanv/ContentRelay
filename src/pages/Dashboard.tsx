@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import CampaignsList from "@/components/dashboard/CampaignsList";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import AutoCommenterDemo from "@/components/dashboard/AutoCommenterDemo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LinkedInAccounts from "@/components/dashboard/LinkedInAccounts";
 import EngagementTargets from "@/components/dashboard/EngagementTargets";
@@ -110,20 +111,25 @@ const Dashboard = () => {
             Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}!
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage your AI-powered LinkedIn engagement automation campaigns
+            AI-powered LinkedIn engagement automation with hyper-relevant comments
           </p>
         </div>
 
         <DashboardStats />
 
-        <Tabs defaultValue="campaigns" className="mt-8">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="campaigns">AI Campaigns</TabsTrigger>
+        <Tabs defaultValue="demo" className="mt-8">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="demo">AI Demo</TabsTrigger>
+            <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
             <TabsTrigger value="targets">Targets</TabsTrigger>
             <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="demo" className="mt-6">
+            <AutoCommenterDemo />
+          </TabsContent>
 
           <TabsContent value="campaigns" className="mt-6">
             <CampaignsList />
