@@ -33,7 +33,7 @@ const EngagementQueue = () => {
   const fetchQueue = async () => {
     try {
       const { data, error } = await supabase
-        .from('engagement_queue')
+        .from('engagement_queue' as any)
         .select(`
           *,
           engagement_targets!inner(name, company, position)
@@ -64,7 +64,7 @@ const EngagementQueue = () => {
   const processQueueItem = async (itemId: string) => {
     try {
       const { error } = await supabase
-        .from('engagement_queue')
+        .from('engagement_queue' as any)
         .update({ status: 'processing' })
         .eq('id', itemId);
 
@@ -96,7 +96,7 @@ const EngagementQueue = () => {
   const removeFromQueue = async (itemId: string) => {
     try {
       const { error } = await supabase
-        .from('engagement_queue')
+        .from('engagement_queue' as any)
         .delete()
         .eq('id', itemId);
 

@@ -9,6 +9,62 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      automation_rules: {
+        Row: {
+          auto_like: boolean
+          campaign_id: string
+          created_at: string
+          daily_comment_limit: number
+          daily_connection_limit: number
+          id: string
+          is_active: boolean
+          keywords: string[] | null
+          name: string
+          schedule_time: string | null
+          trigger_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_like?: boolean
+          campaign_id: string
+          created_at?: string
+          daily_comment_limit?: number
+          daily_connection_limit?: number
+          id?: string
+          is_active?: boolean
+          keywords?: string[] | null
+          name: string
+          schedule_time?: string | null
+          trigger_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_like?: boolean
+          campaign_id?: string
+          created_at?: string
+          daily_comment_limit?: number
+          daily_connection_limit?: number
+          id?: string
+          is_active?: boolean
+          keywords?: string[] | null
+          name?: string
+          schedule_time?: string | null
+          trigger_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_rules_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           created_at: string
@@ -92,6 +148,73 @@ export type Database = {
           },
           {
             foreignKeyName: "engagement_history_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "engagement_targets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engagement_queue: {
+        Row: {
+          automation_rule_id: string | null
+          campaign_id: string
+          content: string | null
+          created_at: string
+          engagement_type: string
+          error_message: string | null
+          id: string
+          processed_at: string | null
+          scheduled_for: string
+          status: string
+          target_id: string
+          user_id: string
+        }
+        Insert: {
+          automation_rule_id?: string | null
+          campaign_id: string
+          content?: string | null
+          created_at?: string
+          engagement_type: string
+          error_message?: string | null
+          id?: string
+          processed_at?: string | null
+          scheduled_for: string
+          status?: string
+          target_id: string
+          user_id: string
+        }
+        Update: {
+          automation_rule_id?: string | null
+          campaign_id?: string
+          content?: string | null
+          created_at?: string
+          engagement_type?: string
+          error_message?: string | null
+          id?: string
+          processed_at?: string | null
+          scheduled_for?: string
+          status?: string
+          target_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_queue_automation_rule_id_fkey"
+            columns: ["automation_rule_id"]
+            isOneToOne: false
+            referencedRelation: "automation_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_queue_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_queue_target_id_fkey"
             columns: ["target_id"]
             isOneToOne: false
             referencedRelation: "engagement_targets"

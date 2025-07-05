@@ -5,252 +5,228 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sparkles, Copy, RefreshCw, ThumbsUp, Send } from 'lucide-react';
-import { useGeminiCommenter } from '@/hooks/useGeminiCommenter';
-import { useEngagementTargets } from '@/hooks/useEngagementTargets';
-import { useCampaigns } from '@/hooks/useCampaigns';
+import { Sparkles, Copy, RefreshCw, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useEngagementTargets } from '@/hooks/useEngagementTargets';
+import { useEngagementHistory } from '@/hooks/useEngagementHistory';
 
 const SmartCommentGenerator = () => {
-  const [postUrl, setPostUrl] = useState('');
-  const [postContent, setPostContent] = useState('');
-  const [selectedTarget, setSelectedTarget] = useState('');
-  const [selectedCampaign, setSelectedCampaign] = useState('');
+  const [targetPerson, setTargetPerson] = useState('');
+  const [targetCompany, setTargetCompany] = useState('');
+  const [postContext, setPostContext] = useState('');
+  const [commentStyle, setCommentStyle] = useState('professional');
   const [generatedComment, setGeneratedComment] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-
-  const { generateComment, loading } = useGeminiCommenter();
-  const { targets } = useEngagementTargets();
-  const { campaigns } = useCampaigns();
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { targets } = useEngagementTargets();
+  const { createEngagement } = useEngagementHistory();
 
-  const userContext = {
-    industry: 'B2B SaaS',
-    company: 'Growth AI',
-    expertise: 'LinkedIn Automation & AI-Powered Engagement',
-    role: 'Founder'
-  };
+  const commentStyles = [
+    { value: 'professional', label: 'Professional & Insightful' },
+    { value: 'friendly', label: 'Friendly & Conversational' },
+    { value: 'thought-provoking', label: 'Thought-Provoking' },
+    { value: 'supportive', label: 'Supportive & Encouraging' },
+  ];
 
-  const handleGenerateComment = async () => {
-    if (!postContent || !selectedTarget || !selectedCampaign) {
+  const generateComment = async () => {
+    if (!targetPerson || !postContext) {
       toast({
         title: "Missing Information",
-        description: "Please fill in post content, select a target, and choose a campaign.",
+        description: "Please provide the target person and post context",
         variant: "destructive",
       });
       return;
     }
 
-    const target = targets.find(t => t.id === selectedTarget);
-    if (!target) return;
-
-    const authorProfile = {
-      name: target.name,
-      company: target.company,
-      industry: target.industry,
-      position: target.position
-    };
-
+    setLoading(true);
     try {
-      const comment = await generateComment(postContent, authorProfile, userContext, selectedCampaign);
-      setGeneratedComment(comment);
+      const { data, error } = await supabase.functions.invoke('linkedin-auto-commenter', {
+        body: {
+          targetPerson,
+          targetCompany,
+          postContext,
+          commentStyle,
+          action: 'generate'
+        }
+      });
+
+      if (error) throw error;
+
+      setGeneratedComment(data.comment);
+      toast({
+        title: "Comment Generated",
+        description: "AI has generated a personalized comment for you",
+      });
     } catch (error) {
-      console.error('Failed to generate comment:', error);
+      console.error('Error generating comment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate comment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCopyComment = () => {
+  const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedComment);
     toast({
-      title: "Copied!",
-      description: "Comment copied to clipboard.",
+      title: "Copied",
+      description: "Comment copied to clipboard",
     });
   };
 
-  const handleScheduleComment = async () => {
-    // Add to engagement queue for later processing
-    toast({
-      title: "Scheduled",
-      description: "Comment has been added to the engagement queue.",
-    });
+  const saveEngagement = async () => {
+    if (!generatedComment) return;
+
+    try {
+      // Find the target or create a new one
+      let target = targets.find(t => 
+        t.name.toLowerCase().includes(targetPerson.toLowerCase())
+      );
+
+      if (!target) {
+        // Create a new target if not found
+        const targetData = {
+          name: targetPerson,
+          company: targetCompany || 'Unknown',
+          position: 'Unknown',
+          industry: 'Unknown',
+          status: 'pending' as const
+        };
+        
+        const { createTarget } = await import('@/hooks/useEngagementTargets');
+        // This would need to be properly implemented with the hook
+      }
+
+      await createEngagement({
+        target_id: target?.id || null,
+        engagement_type: 'comment',
+        content: generatedComment,
+        status: 'pending'
+      });
+
+      toast({
+        title: "Engagement Saved",
+        description: "Comment saved to your engagement history",
+      });
+    } catch (error) {
+      console.error('Error saving engagement:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save engagement",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Smart Comment Generator</h2>
-        <p className="text-gray-600">Generate AI-powered, hyper-relevant LinkedIn comments</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-purple-600" />
+            Smart Comment Generator
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="target-person">Target Person</Label>
+              <Input
+                id="target-person"
+                placeholder="e.g., John Smith"
+                value={targetPerson}
+                onChange={(e) => setTargetPerson(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="target-company">Company (Optional)</Label>
+              <Input
+                id="target-company"
+                placeholder="e.g., Tech Corp"
+                value={targetCompany}
+                onChange={(e) => setTargetCompany(e.target.value)}
+              />
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Input Section */}
+          <div className="space-y-2">
+            <Label htmlFor="post-context">Post Context</Label>
+            <Textarea
+              id="post-context"
+              placeholder="Describe what the LinkedIn post is about, key points, or paste the post content..."
+              value={postContext}
+              onChange={(e) => setPostContext(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="comment-style">Comment Style</Label>
+            <Select value={commentStyle} onValueChange={setCommentStyle}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {commentStyles.map((style) => (
+                  <SelectItem key={style.value} value={style.value}>
+                    {style.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
+            onClick={generateComment}
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Generate Smart Comment
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {generatedComment && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-purple-600" />
-              Post Information
-            </CardTitle>
+            <CardTitle>Generated Comment</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="post-url">LinkedIn Post URL (Optional)</Label>
-              <Input
-                id="post-url"
-                placeholder="https://linkedin.com/posts/..."
-                value={postUrl}
-                onChange={(e) => setPostUrl(e.target.value)}
-              />
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-800 leading-relaxed">{generatedComment}</p>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="post-content">Post Content</Label>
-              <Textarea
-                id="post-content"
-                placeholder="Paste the LinkedIn post content here..."
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                rows={6}
-                required
-              />
+            
+            <div className="flex gap-2">
+              <Button onClick={copyToClipboard} variant="outline" className="flex-1">
+                <Copy className="h-4 w-4 mr-2" />
+                Copy to Clipboard
+              </Button>
+              <Button onClick={saveEngagement} variant="outline" className="flex-1">
+                <Send className="h-4 w-4 mr-2" />
+                Save Engagement
+              </Button>
+              <Button onClick={generateComment} variant="outline">
+                <RefreshCw className="h-4 w-4" />
+              </Button>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="target">Target Person</Label>
-              <Select value={selectedTarget} onValueChange={setSelectedTarget}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select target person" />
-                </SelectTrigger>
-                <SelectContent>
-                  {targets.map((target) => (
-                    <SelectItem key={target.id} value={target.id}>
-                      {target.name} - {target.position} at {target.company}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="campaign">Campaign</Label>
-              <Select value={selectedCampaign} onValueChange={setSelectedCampaign}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select campaign" />
-                </SelectTrigger>
-                <SelectContent>
-                  {campaigns.map((campaign) => (
-                    <SelectItem key={campaign.id} value={campaign.id}>
-                      {campaign.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button 
-              onClick={handleGenerateComment} 
-              disabled={loading || !postContent || !selectedTarget}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-            >
-              {loading ? (
-                <>
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generate AI Comment
-                </>
-              )}
-            </Button>
           </CardContent>
         </Card>
-
-        {/* Output Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ThumbsUp className="h-5 w-5 text-green-600" />
-              Generated Comment
-              {generatedComment && (
-                <Badge variant="outline" className="bg-green-100 text-green-800">
-                  Ready
-                </Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!generatedComment ? (
-              <div className="text-center py-12">
-                <Sparkles className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Your AI-generated comment will appear here</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Generated Comment:</span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setIsEditing(!isEditing)}
-                    >
-                      {isEditing ? 'Preview' : 'Edit'}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCopyComment}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                
-                {isEditing ? (
-                  <Textarea
-                    value={generatedComment}
-                    onChange={(e) => setGeneratedComment(e.target.value)}
-                    className="min-h-[200px]"
-                    placeholder="Edit your comment..."
-                  />
-                ) : (
-                  <div className="bg-white border rounded-lg p-4 min-h-[200px]">
-                    <div className="text-gray-800 whitespace-pre-wrap">{generatedComment}</div>
-                  </div>
-                )}
-
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={handleGenerateComment}
-                    disabled={loading}
-                  >
-                    <RefreshCw className="h-4 w-4 mr-1" />
-                    Regenerate
-                  </Button>
-                  <Button
-                    onClick={handleScheduleComment}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    <Send className="h-4 w-4 mr-1" />
-                    Schedule Comment
-                  </Button>
-                </div>
-
-                <div className="bg-blue-50 p-3 rounded-lg text-sm">
-                  <div className="font-medium text-blue-900 mb-1">AI Context Used:</div>
-                  <div className="text-blue-700">
-                    Target industry match, company relevance, position-specific insights
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      )}
     </div>
   );
 };

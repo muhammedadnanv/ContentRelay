@@ -26,7 +26,7 @@ export const useAutomation = () => {
   const fetchRules = async () => {
     try {
       const { data, error } = await supabase
-        .from('automation_rules')
+        .from('automation_rules' as any)
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -50,7 +50,7 @@ export const useAutomation = () => {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
-        .from('automation_rules')
+        .from('automation_rules' as any)
         .insert([{ ...ruleData, user_id: user.id }])
         .select()
         .single();
@@ -78,7 +78,7 @@ export const useAutomation = () => {
   const toggleRule = async (id: string, is_active: boolean) => {
     try {
       const { data, error } = await supabase
-        .from('automation_rules')
+        .from('automation_rules' as any)
         .update({ is_active })
         .eq('id', id)
         .select()
