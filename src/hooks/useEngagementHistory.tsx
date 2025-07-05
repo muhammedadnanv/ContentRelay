@@ -34,7 +34,7 @@ export const useEngagementHistory = () => {
         .limit(50);
 
       if (error) throw error;
-      setHistory(data || []);
+      setHistory((data || []) as EngagementHistory[]);
     } catch (error) {
       console.error('Error fetching engagement history:', error);
       toast({
@@ -65,15 +65,18 @@ export const useEngagementHistory = () => {
 
       if (error) throw error;
 
-      // Update target engagement count
+      // Update target engagement count by incrementing directly
       if (engagementData.target_id) {
-        await supabase.rpc('increment_engagement_count', {
-          target_id: engagementData.target_id
-        });
+        await supabase
+          .from('engagement_targets')
+          .update({ 
+            engagement_count: supabase.sql`engagement_count + 1`
+          })
+          .eq('id', engagementData.target_id);
       }
 
-      setHistory(prev => [data, ...prev]);
-      return data;
+      setHistory(prev => [data as EngagementHistory, ...prev]);
+      return data as EngagementHistory;
     } catch (error) {
       console.error('Error creating engagement:', error);
       toast({

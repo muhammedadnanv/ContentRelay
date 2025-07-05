@@ -32,7 +32,7 @@ export const useEngagementTargets = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTargets(data || []);
+      setTargets((data || []) as EngagementTarget[]);
     } catch (error) {
       console.error('Error fetching targets:', error);
       toast({
@@ -58,13 +58,13 @@ export const useEngagementTargets = () => {
 
       if (error) throw error;
 
-      setTargets(prev => [data, ...prev]);
+      setTargets(prev => [data as EngagementTarget, ...prev]);
       toast({
         title: "Success",
         description: "Target added successfully",
       });
       
-      return data;
+      return data as EngagementTarget;
     } catch (error) {
       console.error('Error creating target:', error);
       toast({
@@ -88,10 +88,10 @@ export const useEngagementTargets = () => {
       if (error) throw error;
 
       setTargets(prev => prev.map(target => 
-        target.id === id ? data : target
+        target.id === id ? data as EngagementTarget : target
       ));
 
-      return data;
+      return data as EngagementTarget;
     } catch (error) {
       console.error('Error updating target:', error);
       toast({

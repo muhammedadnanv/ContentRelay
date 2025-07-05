@@ -27,7 +27,7 @@ export const useCampaigns = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data || []) as Campaign[]);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
@@ -53,13 +53,13 @@ export const useCampaigns = () => {
 
       if (error) throw error;
 
-      setCampaigns(prev => [data, ...prev]);
+      setCampaigns(prev => [data as Campaign, ...prev]);
       toast({
         title: "Success",
         description: "Campaign created successfully",
       });
       
-      return data;
+      return data as Campaign;
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({
@@ -83,7 +83,7 @@ export const useCampaigns = () => {
       if (error) throw error;
 
       setCampaigns(prev => prev.map(campaign => 
-        campaign.id === id ? data : campaign
+        campaign.id === id ? data as Campaign : campaign
       ));
 
       toast({
@@ -91,7 +91,7 @@ export const useCampaigns = () => {
         description: "Campaign updated successfully",
       });
       
-      return data;
+      return data as Campaign;
     } catch (error) {
       console.error('Error updating campaign:', error);
       toast({
