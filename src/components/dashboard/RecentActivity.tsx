@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MessageCircle, UserPlus, Heart, Send, Loader2 } from "lucide-react";
 import { useEngagementHistory } from "@/hooks/useEngagementHistory";
 
@@ -68,8 +67,7 @@ const RecentActivity = () => {
                     <div className="flex items-center gap-2 mb-1">
                       <p className="text-sm font-medium">
                         {activity.engagement_type.charAt(0).toUpperCase() + activity.engagement_type.slice(1)} 
-                        {/* @ts-ignore */}
-                        {activity.engagement_targets && ` to ${activity.engagement_targets.name}`}
+                        {activity.target_id && ' to target'}
                       </p>
                       <Badge className={getStatusColor(activity.status)}>
                         {activity.status}

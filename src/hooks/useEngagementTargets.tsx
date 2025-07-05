@@ -32,7 +32,7 @@ export const useEngagementTargets = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTargets((data || []) as EngagementTarget[]);
+      setTargets(data as EngagementTarget[]);
     } catch (error) {
       console.error('Error fetching targets:', error);
       toast({

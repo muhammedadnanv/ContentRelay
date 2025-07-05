@@ -34,7 +34,7 @@ export const useEngagementHistory = () => {
         .limit(50);
 
       if (error) throw error;
-      setHistory((data || []) as EngagementHistory[]);
+      setHistory(data as EngagementHistory[]);
     } catch (error) {
       console.error('Error fetching engagement history:', error);
       toast({

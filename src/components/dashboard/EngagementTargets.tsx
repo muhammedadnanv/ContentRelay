@@ -115,7 +115,7 @@ const EngagementTargets = () => {
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <MessageCircle className="h-4 w-4" />
-                    <span>{target.engagement_count} engagements</span>
+                    <span>{target.engagement_count || 0} engagements</span>
                   </div>
                   {target.last_engagement && (
                     <span>Last: {new Date(target.last_engagement).toLocaleDateString()}</span>

@@ -27,7 +27,7 @@ export const useCampaigns = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCampaigns((data || []) as Campaign[]);
+      setCampaigns(data as Campaign[]);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
