@@ -9,6 +9,9 @@ import DashboardStats from "@/components/dashboard/DashboardStats";
 import CampaignsList from "@/components/dashboard/CampaignsList";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import AutoCommenterDemo from "@/components/dashboard/AutoCommenterDemo";
+import AutomationSettings from "@/components/dashboard/AutomationSettings";
+import EngagementQueue from "@/components/dashboard/EngagementQueue";
+import SmartCommentGenerator from "@/components/dashboard/SmartCommentGenerator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LinkedInAccounts from "@/components/dashboard/LinkedInAccounts";
 import EngagementTargets from "@/components/dashboard/EngagementTargets";
@@ -117,9 +120,11 @@ const Dashboard = () => {
 
         <DashboardStats />
 
-        <Tabs defaultValue="demo" className="mt-8">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="demo">AI Demo</TabsTrigger>
+        <Tabs defaultValue="smart-comments" className="mt-8">
+          <TabsList className="grid w-full grid-cols-8">
+            <TabsTrigger value="smart-comments">Smart Comments</TabsTrigger>
+            <TabsTrigger value="automation">Automation</TabsTrigger>
+            <TabsTrigger value="queue">Queue</TabsTrigger>
             <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
             <TabsTrigger value="targets">Targets</TabsTrigger>
             <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
@@ -127,8 +132,16 @@ const Dashboard = () => {
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="demo" className="mt-6">
-            <AutoCommenterDemo />
+          <TabsContent value="smart-comments" className="mt-6">
+            <SmartCommentGenerator />
+          </TabsContent>
+
+          <TabsContent value="automation" className="mt-6">
+            <AutomationSettings />
+          </TabsContent>
+
+          <TabsContent value="queue" className="mt-6">
+            <EngagementQueue />
           </TabsContent>
 
           <TabsContent value="campaigns" className="mt-6">
