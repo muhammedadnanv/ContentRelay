@@ -7,29 +7,38 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useCampaigns } from "@/hooks/useCampaigns";
 
 const CreateCampaignModal = () => {
   const [open, setOpen] = useState(false);
   const [campaignName, setCampaignName] = useState("");
   const [targetIndustry, setTargetIndustry] = useState("");
   const [description, setDescription] = useState("");
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const { createCampaign } = useCampaigns();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Simulate campaign creation
-    toast({
-      title: "Campaign Created",
-      description: `"${campaignName}" campaign has been created successfully.`,
-    });
-    
-    // Reset form and close modal
-    setCampaignName("");
-    setTargetIndustry("");
-    setDescription("");
-    setOpen(false);
+    try {
+      await createCampaign({
+        name: campaignName,
+        target_industry: targetIndustry,
+        description: description || undefined,
+        status: 'active'
+      });
+      
+      // Reset form and close modal
+      setCampaignName("");
+      setTargetIndustry("");
+      setDescription("");
+      setOpen(false);
+    } catch (error) {
+      // Error is handled in the hook
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,7 +98,9 @@ const CreateCampaignModal = () => {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Create Campaign</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Creating..." : "Create Campaign"}
+            </Button>
           </div>
         </form>
       </DialogContent>

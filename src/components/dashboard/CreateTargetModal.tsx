@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useEngagementTargets } from "@/hooks/useEngagementTargets";
 
 const CreateTargetModal = () => {
   const [open, setOpen] = useState(false);
@@ -14,23 +14,36 @@ const CreateTargetModal = () => {
   const [company, setCompany] = useState("");
   const [position, setPosition] = useState("");
   const [industry, setIndustry] = useState("");
-  const { toast } = useToast();
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { createTarget } = useEngagementTargets();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Simulate target creation
-    toast({
-      title: "Target Added",
-      description: `${name} from ${company} has been added to your engagement targets.`,
-    });
-    
-    // Reset form and close modal
-    setName("");
-    setCompany("");
-    setPosition("");
-    setIndustry("");
-    setOpen(false);
+    try {
+      await createTarget({
+        name,
+        company,
+        position,
+        industry,
+        linkedin_profile_url: linkedinUrl || undefined,
+        status: 'pending'
+      });
+      
+      // Reset form and close modal
+      setName("");
+      setCompany("");
+      setPosition("");
+      setIndustry("");
+      setLinkedinUrl("");
+      setOpen(false);
+    } catch (error) {
+      // Error is handled in the hook
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,6 +91,16 @@ const CreateTargetModal = () => {
               required
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="linkedin-url">LinkedIn Profile URL (Optional)</Label>
+            <Input
+              id="linkedin-url"
+              placeholder="e.g., https://linkedin.com/in/johnsmith"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+            />
+          </div>
           
           <div className="space-y-2">
             <Label htmlFor="target-industry">Industry</Label>
@@ -101,7 +124,9 @@ const CreateTargetModal = () => {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Add Target</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Adding..." : "Add Target"}
+            </Button>
           </div>
         </form>
       </DialogContent>

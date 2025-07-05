@@ -9,6 +9,152 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          status: string
+          target_industry: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          status?: string
+          target_industry: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          status?: string
+          target_industry?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      engagement_history: {
+        Row: {
+          campaign_id: string | null
+          content: string | null
+          created_at: string
+          engagement_type: string
+          id: string
+          post_url: string | null
+          response_received: boolean | null
+          sent_at: string | null
+          status: string
+          target_id: string | null
+          user_id: string
+        }
+        Insert: {
+          campaign_id?: string | null
+          content?: string | null
+          created_at?: string
+          engagement_type: string
+          id?: string
+          post_url?: string | null
+          response_received?: boolean | null
+          sent_at?: string | null
+          status?: string
+          target_id?: string | null
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string | null
+          content?: string | null
+          created_at?: string
+          engagement_type?: string
+          id?: string
+          post_url?: string | null
+          response_received?: boolean | null
+          sent_at?: string | null
+          status?: string
+          target_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_history_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_history_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "engagement_targets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engagement_targets: {
+        Row: {
+          campaign_id: string | null
+          company: string
+          created_at: string
+          engagement_count: number | null
+          id: string
+          industry: string
+          last_engagement: string | null
+          linkedin_profile_url: string | null
+          name: string
+          position: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id?: string | null
+          company: string
+          created_at?: string
+          engagement_count?: number | null
+          id?: string
+          industry: string
+          last_engagement?: string | null
+          linkedin_profile_url?: string | null
+          name: string
+          position: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string | null
+          company?: string
+          created_at?: string
+          engagement_count?: number | null
+          id?: string
+          industry?: string
+          last_engagement?: string | null
+          linkedin_profile_url?: string | null
+          name?: string
+          position?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_targets_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flows: {
         Row: {
           created_at: string
@@ -108,6 +254,51 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      linkedin_accounts: {
+        Row: {
+          connection_count: number | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          last_sync: string | null
+          plan_type: string | null
+          profile_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          connection_count?: number | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          last_sync?: string | null
+          plan_type?: string | null
+          profile_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          connection_count?: number | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          last_sync?: string | null
+          plan_type?: string | null
+          profile_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          username?: string
         }
         Relationships: []
       }
