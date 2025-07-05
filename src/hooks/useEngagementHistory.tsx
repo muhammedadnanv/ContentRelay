@@ -67,12 +67,21 @@ export const useEngagementHistory = () => {
 
       // Update target engagement count by incrementing directly
       if (engagementData.target_id) {
-        await supabase
+        // First get the current count, then increment it
+        const { data: targetData, error: targetError } = await supabase
           .from('engagement_targets')
-          .update({ 
-            engagement_count: supabase.sql`engagement_count + 1`
-          })
-          .eq('id', engagementData.target_id);
+          .select('engagement_count')
+          .eq('id', engagementData.target_id)
+          .single();
+
+        if (!targetError && targetData) {
+          await supabase
+            .from('engagement_targets')
+            .update({ 
+              engagement_count: (targetData.engagement_count || 0) + 1
+            })
+            .eq('id', engagementData.target_id);
+        }
       }
 
       setHistory(prev => [data as EngagementHistory, ...prev]);
