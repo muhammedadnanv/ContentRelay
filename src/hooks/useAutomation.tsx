@@ -2,21 +2,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Database } from '@/integrations/supabase/types';
 
-export interface AutomationRule {
-  id: string;
-  campaign_id: string;
-  name: string;
-  trigger_type: 'schedule' | 'keyword' | 'manual';
-  schedule_time?: string;
-  keywords?: string[];
-  is_active: boolean;
-  daily_comment_limit: number;
-  daily_connection_limit: number;
-  auto_like: boolean;
-  created_at: string;
-  user_id: string;
-}
+// Use the database type directly to avoid type mismatches
+type AutomationRuleRow = Database['public']['Tables']['automation_rules']['Row'];
+
+export interface AutomationRule extends AutomationRuleRow {}
 
 export const useAutomation = () => {
   const [rules, setRules] = useState<AutomationRule[]>([]);
@@ -44,7 +35,7 @@ export const useAutomation = () => {
     }
   };
 
-  const createRule = async (ruleData: Omit<AutomationRule, 'id' | 'created_at' | 'user_id'>) => {
+  const createRule = async (ruleData: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
