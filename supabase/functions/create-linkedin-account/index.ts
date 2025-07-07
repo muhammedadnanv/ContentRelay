@@ -1,93 +1,125 @@
 
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+}
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { username, full_name, email, profile_url } = await req.json();
+    // Create Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        }
+      }
+    )
 
-    // Get the authenticated user
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'No authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-
+    // Get the user from the JWT
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    
     if (userError || !user) {
       return new Response(
-        JSON.stringify({ error: 'Invalid user' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+        JSON.stringify({ error: 'Unauthorized' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
     }
 
-    // Check if LinkedIn account already exists
-    const { data: existingAccount } = await supabase
+    // Parse request body
+    const { username, full_name, email, profile_url } = await req.json()
+
+    // Validate required fields
+    if (!username || !full_name || !email) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: username, full_name, email' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    // Check if account already exists
+    const { data: existingAccount } = await supabaseClient
       .from('linkedin_accounts')
       .select('id')
       .eq('user_id', user.id)
       .eq('email', email)
-      .single();
+      .single()
 
     if (existingAccount) {
       return new Response(
-        JSON.stringify({ message: 'LinkedIn account already exists' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+        JSON.stringify({ 
+          message: 'LinkedIn account already exists',
+          account_id: existingAccount.id 
+        }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
     }
 
     // Create new LinkedIn account record
-    const { data, error } = await supabase
+    const { data: newAccount, error: insertError } = await supabaseClient
       .from('linkedin_accounts')
-      .insert([{
+      .insert({
         user_id: user.id,
-        username,
-        full_name,
-        email,
-        profile_url,
-        status: 'connected',
-        connection_count: 0,
-        plan_type: 'Basic'
-      }])
+        username: username,
+        full_name: full_name,
+        email: email,
+        profile_url: profile_url || null,
+        status: 'active',
+        connection_count: null,
+        plan_type: 'Basic',
+        last_sync: null
+      })
       .select()
-      .single();
+      .single()
 
-    if (error) {
-      console.error('Error creating LinkedIn account:', error);
+    if (insertError) {
+      console.error('Error creating LinkedIn account:', insertError)
       return new Response(
-        JSON.stringify({ error: 'Failed to create LinkedIn account record' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+        JSON.stringify({ error: 'Failed to create LinkedIn account' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
     }
 
     return new Response(
-      JSON.stringify({ success: true, account: data }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      JSON.stringify({ 
+        message: 'LinkedIn account created successfully',
+        account: newAccount 
+      }),
+      { 
+        status: 200, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    )
 
   } catch (error) {
-    console.error('Error in create-linkedin-account function:', error);
+    console.error('Unexpected error:', error)
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    )
   }
-});
+})

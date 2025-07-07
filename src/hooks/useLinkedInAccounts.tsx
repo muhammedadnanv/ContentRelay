@@ -2,10 +2,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Database } from '@/integrations/supabase/types';
+import { Tables } from '@/integrations/supabase/types';
 
-type LinkedInAccount = Database['public']['Tables']['linkedin_accounts']['Row'];
-type LinkedInAccountInsert = Database['public']['Tables']['linkedin_accounts']['Insert'];
+type LinkedInAccount = Tables<'linkedin_accounts'>;
 
 export const useLinkedInAccounts = () => {
   const [accounts, setAccounts] = useState<LinkedInAccount[]>([]);
@@ -14,18 +13,37 @@ export const useLinkedInAccounts = () => {
 
   const fetchAccounts = async () => {
     try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.log('No authenticated user found');
+        setAccounts([]);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('linkedin_accounts')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching LinkedIn accounts:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load LinkedIn accounts.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setAccounts(data || []);
     } catch (error) {
-      console.error('Error fetching LinkedIn accounts:', error);
+      console.error('Unexpected error:', error);
       toast({
         title: "Error",
-        description: "Failed to load LinkedIn accounts",
+        description: "An unexpected error occurred.",
         variant: "destructive",
       });
     } finally {
@@ -33,91 +51,35 @@ export const useLinkedInAccounts = () => {
     }
   };
 
-  const createAccount = async (accountData: Omit<LinkedInAccountInsert, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
-      const { data, error } = await supabase
-        .from('linkedin_accounts')
-        .insert([{ ...accountData, user_id: user.id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setAccounts(prev => [data, ...prev]);
-      toast({
-        title: "Success",
-        description: "LinkedIn account connected successfully",
-      });
-      
-      return data;
-    } catch (error) {
-      console.error('Error creating LinkedIn account:', error);
-      toast({
-        title: "Error",
-        description: "Failed to connect LinkedIn account",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
-
-  const updateAccount = async (id: string, updates: Partial<LinkedInAccountInsert>) => {
-    try {
-      const { data, error } = await supabase
-        .from('linkedin_accounts')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setAccounts(prev => prev.map(account => 
-        account.id === id ? { ...account, ...updates } : account
-      ));
-
-      toast({
-        title: "Success",
-        description: "LinkedIn account updated successfully",
-      });
-      
-      return data;
-    } catch (error) {
-      console.error('Error updating LinkedIn account:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update LinkedIn account",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
-
-  const deleteAccount = async (id: string) => {
+  const deleteAccount = async (accountId: string) => {
     try {
       const { error } = await supabase
         .from('linkedin_accounts')
         .delete()
-        .eq('id', id);
+        .eq('id', accountId);
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to disconnect LinkedIn account.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      setAccounts(prev => prev.filter(account => account.id !== id));
       toast({
-        title: "Success",
-        description: "LinkedIn account disconnected successfully",
+        title: "Account Disconnected",
+        description: "LinkedIn account has been disconnected successfully.",
       });
+
+      // Refresh the accounts list
+      fetchAccounts();
     } catch (error) {
-      console.error('Error deleting LinkedIn account:', error);
       toast({
         title: "Error",
-        description: "Failed to disconnect LinkedIn account",
+        description: "An unexpected error occurred while disconnecting.",
         variant: "destructive",
       });
-      throw error;
     }
   };
 
@@ -128,8 +90,6 @@ export const useLinkedInAccounts = () => {
   return {
     accounts,
     loading,
-    createAccount,
-    updateAccount,
     deleteAccount,
     refetch: fetchAccounts
   };

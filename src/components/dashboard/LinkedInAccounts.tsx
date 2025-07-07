@@ -24,24 +24,29 @@ const LinkedInAccounts = () => {
         if (linkedinProfile && !accounts.find(acc => acc.email === session.user.email)) {
           // Create LinkedIn account record
           try {
-            await fetch('/api/create-linkedin-account', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { error } = await supabase.from('linkedin_accounts').insert({
+                user_id: user.id,
                 username: linkedinProfile.preferred_username || linkedinProfile.email?.split('@')[0] || 'unknown',
                 full_name: linkedinProfile.name || linkedinProfile.full_name || 'Unknown User',
                 email: linkedinProfile.email || session.user.email || '',
                 profile_url: linkedinProfile.picture || null,
-              })
-            });
-            
-            // Refresh accounts list
-            refetch();
-            
-            toast({
-              title: "LinkedIn Connected",
-              description: "Your LinkedIn account has been successfully connected!",
-            });
+                status: 'active'
+              });
+
+              if (error) {
+                console.error('Error creating LinkedIn account:', error);
+              } else {
+                // Refresh accounts list
+                refetch();
+                
+                toast({
+                  title: "LinkedIn Connected",
+                  description: "Your LinkedIn account has been successfully connected!",
+                });
+              }
+            }
           } catch (error) {
             console.error('Error creating LinkedIn account record:', error);
           }
@@ -113,92 +118,97 @@ const LinkedInAccounts = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">LinkedIn Accounts</h2>
-          <p className="text-muted-foreground">Manage your connected LinkedIn accounts for automation</p>
+          <h2 className="text-xl sm:text-2xl font-bold">LinkedIn Accounts</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Manage your connected LinkedIn accounts for automation</p>
         </div>
-        <Button onClick={handleConnectAccount}>
+        <Button onClick={handleConnectAccount} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Connect Account
         </Button>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         {accounts.map((account) => (
-          <Card key={account.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Linkedin className="h-8 w-8 text-blue-600" />
+          <Card key={account.id} className="overflow-hidden">
+            <CardHeader className="pb-3 sm:pb-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                    <Linkedin className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                   </div>
-                  <div>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {account.full_name}
-                      <Badge variant="default" className="bg-green-100 text-green-800">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base sm:text-lg flex flex-col sm:flex-row sm:items-center gap-2">
+                      <span className="truncate">{account.full_name}</span>
+                      <Badge variant="default" className="bg-green-100 text-green-800 w-fit">
                         {account.status}
                       </Badge>
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground">@{account.username}</p>
-                    <p className="text-xs text-muted-foreground">{account.email}</p>
+                    <p className="text-sm text-muted-foreground truncate">@{account.username}</p>
+                    <p className="text-xs text-muted-foreground truncate">{account.email}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => handleRefreshAccount(account.id)}
+                    className="h-8 w-8 p-0 sm:h-9 sm:w-9"
                   >
-                    <RefreshCw className="h-4 w-4" />
+                    <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4" />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+                  >
+                    <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Connections</p>
-                  <p className="font-semibold">{account.connection_count?.toLocaleString() || 'N/A'}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="text-center sm:text-left">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Connections</p>
+                  <p className="font-semibold text-sm sm:text-base">{account.connection_count?.toLocaleString() || 'N/A'}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Plan Type</p>
-                  <p className="font-semibold">{account.plan_type || 'Basic'}</p>
+                <div className="text-center sm:text-left">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Plan Type</p>
+                  <p className="font-semibold text-sm sm:text-base">{account.plan_type || 'Basic'}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Last Sync</p>
-                  <p className="font-semibold">
+                <div className="text-center sm:text-left">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Last Sync</p>
+                  <p className="font-semibold text-sm sm:text-base">
                     {account.last_sync ? new Date(account.last_sync).toLocaleDateString() : 'Never'}
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between pt-4 border-t">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t">
                 {account.profile_url ? (
                   <a 
                     href={account.profile_url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm w-fit"
                   >
-                    <ExternalLink className="h-4 w-4" />
-                    View LinkedIn Profile
+                    <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">View LinkedIn Profile</span>
                   </a>
                 ) : (
                   <span className="text-sm text-muted-foreground">No profile URL available</span>
                 )}
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button variant="outline" size="sm" className="text-xs sm:text-sm">
                     Configure Automation
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-red-600 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700 text-xs sm:text-sm"
                     onClick={() => handleDisconnectAccount(account.id)}
                   >
                     Disconnect
@@ -211,22 +221,22 @@ const LinkedInAccounts = () => {
 
         {accounts.length === 0 && (
           <Card>
-            <CardContent className="text-center py-12">
-              <div className="p-4 bg-blue-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                <Linkedin className="h-10 w-10 text-blue-600" />
+            <CardContent className="text-center py-8 sm:py-12">
+              <div className="p-3 sm:p-4 bg-blue-50 rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center">
+                <Linkedin className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
               </div>
-              <h3 className="text-lg font-medium mb-2">No LinkedIn accounts connected</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              <h3 className="text-base sm:text-lg font-medium mb-2">No LinkedIn accounts connected</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
                 Connect your LinkedIn account to start automating your engagement. 
                 Our AI will help you create hyper-relevant comments and connection requests.
               </p>
-              <Button onClick={handleConnectAccount}>
+              <Button onClick={handleConnectAccount} className="w-full sm:w-auto">
                 <Linkedin className="h-4 w-4 mr-2" />
                 Connect LinkedIn Account
               </Button>
               
               <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                <p className="text-sm text-amber-800">
+                <p className="text-xs sm:text-sm text-amber-800 leading-relaxed">
                   <strong>Note:</strong> Make sure your LinkedIn app credentials are properly configured in your Supabase project settings under Authentication → Providers → LinkedIn.
                 </p>
               </div>

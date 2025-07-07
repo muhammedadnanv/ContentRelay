@@ -8,7 +8,6 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import CampaignsList from "@/components/dashboard/CampaignsList";
 import RecentActivity from "@/components/dashboard/RecentActivity";
-import AutoCommenterDemo from "@/components/dashboard/AutoCommenterDemo";
 import AutomationSettings from "@/components/dashboard/AutomationSettings";
 import EngagementQueue from "@/components/dashboard/EngagementQueue";
 import SmartCommentGenerator from "@/components/dashboard/SmartCommentGenerator";
@@ -16,12 +15,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LinkedInAccounts from "@/components/dashboard/LinkedInAccounts";
 import EngagementTargets from "@/components/dashboard/EngagementTargets";
 import Analytics from "@/components/dashboard/Analytics";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -108,59 +109,78 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader user={user} />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}!
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-sm sm:text-base text-gray-600 mt-2">
             AI-powered LinkedIn engagement automation with hyper-relevant comments
           </p>
         </div>
 
         <DashboardStats />
 
-        <Tabs defaultValue="smart-comments" className="mt-8">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="smart-comments">Smart Comments</TabsTrigger>
-            <TabsTrigger value="automation">Automation</TabsTrigger>
-            <TabsTrigger value="queue">Queue</TabsTrigger>
-            <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
-            <TabsTrigger value="targets">Targets</TabsTrigger>
-            <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <Tabs defaultValue="smart-comments" className="mt-6 sm:mt-8">
+          <TabsList className={`grid w-full ${isMobile ? 'grid-cols-4' : 'grid-cols-8'} gap-1`}>
+            <TabsTrigger value="smart-comments" className="text-xs sm:text-sm">
+              {isMobile ? 'Comments' : 'Smart Comments'}
+            </TabsTrigger>
+            <TabsTrigger value="automation" className="text-xs sm:text-sm">
+              {isMobile ? 'Auto' : 'Automation'}
+            </TabsTrigger>
+            <TabsTrigger value="queue" className="text-xs sm:text-sm">Queue</TabsTrigger>
+            <TabsTrigger value="campaigns" className="text-xs sm:text-sm">
+              {isMobile ? 'Camps' : 'Campaigns'}
+            </TabsTrigger>
+            {!isMobile && (
+              <>
+                <TabsTrigger value="targets" className="text-xs sm:text-sm">Targets</TabsTrigger>
+                <TabsTrigger value="linkedin" className="text-xs sm:text-sm">LinkedIn</TabsTrigger>
+                <TabsTrigger value="activity" className="text-xs sm:text-sm">Activity</TabsTrigger>
+                <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
+              </>
+            )}
           </TabsList>
 
-          <TabsContent value="smart-comments" className="mt-6">
+          {isMobile && (
+            <TabsList className="grid w-full grid-cols-4 gap-1 mt-2">
+              <TabsTrigger value="targets" className="text-xs sm:text-sm">Targets</TabsTrigger>
+              <TabsTrigger value="linkedin" className="text-xs sm:text-sm">LinkedIn</TabsTrigger>
+              <TabsTrigger value="activity" className="text-xs sm:text-sm">Activity</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
+            </TabsList>
+          )}
+
+          <TabsContent value="smart-comments" className="mt-4 sm:mt-6">
             <SmartCommentGenerator />
           </TabsContent>
 
-          <TabsContent value="automation" className="mt-6">
+          <TabsContent value="automation" className="mt-4 sm:mt-6">
             <AutomationSettings />
           </TabsContent>
 
-          <TabsContent value="queue" className="mt-6">
+          <TabsContent value="queue" className="mt-4 sm:mt-6">
             <EngagementQueue />
           </TabsContent>
 
-          <TabsContent value="campaigns" className="mt-6">
+          <TabsContent value="campaigns" className="mt-4 sm:mt-6">
             <CampaignsList />
           </TabsContent>
 
-          <TabsContent value="targets" className="mt-6">
+          <TabsContent value="targets" className="mt-4 sm:mt-6">
             <EngagementTargets />
           </TabsContent>
 
-          <TabsContent value="linkedin" className="mt-6">
+          <TabsContent value="linkedin" className="mt-4 sm:mt-6">
             <LinkedInAccounts />
           </TabsContent>
 
-          <TabsContent value="activity" className="mt-6">
+          <TabsContent value="activity" className="mt-4 sm:mt-6">
             <RecentActivity />
           </TabsContent>
 
-          <TabsContent value="analytics" className="mt-6">
+          <TabsContent value="analytics" className="mt-4 sm:mt-6">
             <Analytics />
           </TabsContent>
         </Tabs>

@@ -212,7 +212,7 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
       </div>
     );
@@ -222,36 +222,37 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Back to Home Button */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 p-2 sm:p-3"
+            size="sm"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            <span className="text-sm sm:text-base">Back to Home</span>
           </Button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
               Welcome to Content Relay
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Your AI-powered LinkedIn automation platform
             </p>
           </div>
 
           {/* Authentication Content */}
           {user ? (
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-4 sm:space-y-6">
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                <p className="text-green-800 font-medium">
+                <p className="text-green-800 font-medium text-sm sm:text-base">
                   Welcome, {user.user_metadata?.full_name || user.email}!
                 </p>
-                <p className="text-green-600 text-sm mt-1">
+                <p className="text-green-600 text-xs sm:text-sm mt-1">
                   You are successfully authenticated.
                 </p>
               </div>
@@ -260,21 +261,21 @@ const Auth = () => {
                 onClick={signOut}
                 disabled={authLoading}
                 variant="outline"
-                className="w-full"
+                className="w-full h-11 sm:h-12"
               >
                 {authLoading ? 'Signing out...' : 'Sign Out'}
               </Button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* LinkedIn OAuth */}
               <Button
                 onClick={signInWithLinkedIn}
                 disabled={authLoading}
-                className="w-full bg-[#0077B5] hover:bg-[#005885] text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors"
+                className="w-full bg-[#0077B5] hover:bg-[#005885] text-white h-11 sm:h-12 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors"
               >
-                <Linkedin className="h-5 w-5" />
-                <span>
+                <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-sm sm:text-base">
                   {authLoading ? 'Connecting...' : 'Continue with LinkedIn'}
                 </span>
               </Button>
@@ -290,15 +291,15 @@ const Auth = () => {
 
               {/* Email/Password Auth */}
               <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signin">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">
+                  <TabsTrigger value="signin" className="text-sm sm:text-base">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup" className="text-sm sm:text-base">Sign Up</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="signin" className="space-y-4">
+                <TabsContent value="signin" className="space-y-4 mt-4 sm:mt-6">
                   <form onSubmit={signInWithEmail} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signin-email">Email</Label>
+                      <Label htmlFor="signin-email" className="text-sm sm:text-base">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -307,13 +308,13 @@ const Auth = () => {
                           placeholder="Enter your email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
+                      <Label htmlFor="signin-password" className="text-sm sm:text-base">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -322,7 +323,7 @@ const Auth = () => {
                           placeholder="Enter your password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
                           required
                         />
                       </div>
@@ -330,17 +331,17 @@ const Auth = () => {
                     <Button
                       type="submit"
                       disabled={authLoading}
-                      className="w-full"
+                      className="w-full h-11 sm:h-12 text-sm sm:text-base"
                     >
                       {authLoading ? 'Signing in...' : 'Sign In'}
                     </Button>
                   </form>
                 </TabsContent>
                 
-                <TabsContent value="signup" className="space-y-4">
+                <TabsContent value="signup" className="space-y-4 mt-4 sm:mt-6">
                   <form onSubmit={signUpWithEmail} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Label htmlFor="signup-name" className="text-sm sm:text-base">Full Name</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -349,13 +350,13 @@ const Auth = () => {
                           placeholder="Enter your full name"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-email" className="text-sm sm:text-base">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -364,13 +365,13 @@ const Auth = () => {
                           placeholder="Enter your email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="signup-password" className="text-sm sm:text-base">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -379,7 +380,7 @@ const Auth = () => {
                           placeholder="Create a password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
                           required
                         />
                       </div>
@@ -387,7 +388,7 @@ const Auth = () => {
                     <Button
                       type="submit"
                       disabled={authLoading}
-                      className="w-full"
+                      className="w-full h-11 sm:h-12 text-sm sm:text-base"
                     >
                       {authLoading ? 'Creating account...' : 'Sign Up'}
                     </Button>
@@ -395,7 +396,7 @@ const Auth = () => {
                 </TabsContent>
               </Tabs>
               
-              <p className="text-xs text-gray-500 text-center">
+              <p className="text-xs text-gray-500 text-center leading-relaxed">
                 By continuing, you agree to our Terms of Service and Privacy Policy.
               </p>
             </div>

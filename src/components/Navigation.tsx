@@ -22,22 +22,22 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-14 sm:h-16">
+        <div className="flex items-center justify-between h-16 sm:h-18">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1A1A1A]">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1A1A1A]">
               Content Relay
             </h1>
-            <p className="text-xs text-gray-600 hidden sm:block">LinkedIn Automation Service</p>
+            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">LinkedIn Automation Service</p>
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             {/* User Status */}
             {user && (
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <User className="h-4 w-4" />
-                <span className="hidden lg:inline">
+                <span className="hidden lg:inline truncate max-w-32">
                   {user.user_metadata?.full_name || user.email}
                 </span>
               </div>
@@ -56,7 +56,7 @@ const Navigation = () => {
                 rel="noopener noreferrer"
                 aria-label="Follow on Instagram"
               >
-                <Instagram className="h-4 w-4 lg:h-5 lg:w-5" />
+                <Instagram className="h-5 w-5" />
               </a>
             </Button>
             <Button
@@ -71,7 +71,7 @@ const Navigation = () => {
                 rel="noopener noreferrer"
                 aria-label="Connect on LinkedIn"
               >
-                <Linkedin className="h-4 w-4 lg:h-5 lg:w-5" />
+                <Linkedin className="h-5 w-5" />
               </a>
             </Button>
 
@@ -103,7 +103,7 @@ const Navigation = () => {
               aria-label="Toggle menu"
               className="p-2"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
@@ -114,16 +114,16 @@ const Navigation = () => {
             <div className="space-y-4">
               {/* User Status Mobile */}
               {user && (
-                <div className="px-4 py-2 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <User className="h-4 w-4" />
-                    <span>{user.user_metadata?.full_name || user.email}</span>
+                <div className="px-4 py-3 bg-gray-50 rounded-lg mx-4">
+                  <div className="flex items-center space-x-3 text-sm text-gray-600">
+                    <User className="h-5 w-5" />
+                    <span className="truncate">{user.user_metadata?.full_name || user.email}</span>
                   </div>
                 </div>
               )}
 
               {/* Social Links Mobile */}
-              <div className="flex items-center justify-center space-x-8">
+              <div className="flex items-center justify-center space-x-8 py-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -166,11 +166,11 @@ const Navigation = () => {
                   onClick={handleAuthAction}
                   disabled={loading}
                   variant={user ? "outline" : "default"}
-                  className="w-full"
+                  className="w-full h-12 text-base"
                 >
                   {user ? (
                     <>
-                      <LogOut className="h-4 w-4 mr-2" />
+                      <LogOut className="h-5 w-5 mr-2" />
                       Sign Out
                     </>
                   ) : (
