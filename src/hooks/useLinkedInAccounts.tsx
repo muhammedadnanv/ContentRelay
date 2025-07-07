@@ -14,6 +14,8 @@ export const useLinkedInAccounts = () => {
   const fetchAccounts = async () => {
     try {
       setLoading(true);
+      console.log('Fetching LinkedIn accounts...');
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -21,6 +23,8 @@ export const useLinkedInAccounts = () => {
         setAccounts([]);
         return;
       }
+
+      console.log('User found:', user.id);
 
       const { data, error } = await supabase
         .from('linkedin_accounts')
@@ -38,6 +42,7 @@ export const useLinkedInAccounts = () => {
         return;
       }
 
+      console.log('LinkedIn accounts fetched:', data);
       setAccounts(data || []);
     } catch (error) {
       console.error('Unexpected error:', error);
@@ -53,12 +58,15 @@ export const useLinkedInAccounts = () => {
 
   const deleteAccount = async (accountId: string) => {
     try {
+      console.log('Deleting LinkedIn account:', accountId);
+      
       const { error } = await supabase
         .from('linkedin_accounts')
         .delete()
         .eq('id', accountId);
 
       if (error) {
+        console.error('Error deleting LinkedIn account:', error);
         toast({
           title: "Error",
           description: "Failed to disconnect LinkedIn account.",
@@ -75,6 +83,7 @@ export const useLinkedInAccounts = () => {
       // Refresh the accounts list
       fetchAccounts();
     } catch (error) {
+      console.error('Unexpected error while deleting:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred while disconnecting.",

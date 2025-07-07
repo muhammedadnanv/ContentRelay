@@ -7,72 +7,103 @@ import { Linkedin, Settings, Plus, RefreshCw, ExternalLink } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { useLinkedInAccounts } from "@/hooks/useLinkedInAccounts";
 import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams } from "react-router-dom";
 
 const LinkedInAccounts = () => {
   const { toast } = useToast();
   const { accounts, loading, deleteAccount, refetch } = useLinkedInAccounts();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     // Check if we just came back from LinkedIn OAuth
     const checkLinkedInConnection = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (session?.user && session.user.app_metadata?.provider === 'linkedin_oidc') {
-        // Extract LinkedIn profile data from the session
-        const linkedinProfile = session.user.user_metadata;
+      if (session?.user) {
+        // Check if this is a LinkedIn OAuth session
+        const isLinkedInAuth = session.user.app_metadata?.provider === 'linkedin_oidc' || 
+                              session.user.user_metadata?.iss?.includes('linkedin');
         
-        if (linkedinProfile && !accounts.find(acc => acc.email === session.user.email)) {
+        if (isLinkedInAuth && !accounts.find(acc => acc.email === session.user.email)) {
           // Create LinkedIn account record
           try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              const { error } = await supabase.from('linkedin_accounts').insert({
-                user_id: user.id,
-                username: linkedinProfile.preferred_username || linkedinProfile.email?.split('@')[0] || 'unknown',
-                full_name: linkedinProfile.name || linkedinProfile.full_name || 'Unknown User',
-                email: linkedinProfile.email || session.user.email || '',
-                profile_url: linkedinProfile.picture || null,
-                status: 'active'
-              });
+            const linkedinProfile = session.user.user_metadata;
+            
+            const accountData = {
+              username: linkedinProfile.preferred_username || 
+                       linkedinProfile.email?.split('@')[0] || 
+                       session.user.email?.split('@')[0] || 
+                       'unknown',
+              full_name: linkedinProfile.name || 
+                        linkedinProfile.full_name || 
+                        `${linkedinProfile.given_name || ''} ${linkedinProfile.family_name || ''}`.trim() ||
+                        'Unknown User',
+              email: linkedinProfile.email || session.user.email || '',
+              profile_url: linkedinProfile.picture || null
+            };
 
-              if (error) {
-                console.error('Error creating LinkedIn account:', error);
-              } else {
-                // Refresh accounts list
-                refetch();
-                
-                toast({
-                  title: "LinkedIn Connected",
-                  description: "Your LinkedIn account has been successfully connected!",
-                });
-              }
+            console.log('Creating LinkedIn account with data:', accountData);
+
+            const { data, error } = await supabase.functions.invoke('create-linkedin-account', {
+              body: accountData
+            });
+
+            if (error) {
+              console.error('Error creating LinkedIn account:', error);
+              toast({
+                title: "Connection Error",
+                description: "Failed to save LinkedIn account. Please try again.",
+                variant: "destructive",
+              });
+            } else {
+              console.log('LinkedIn account created successfully:', data);
+              // Refresh accounts list
+              refetch();
+              
+              toast({
+                title: "LinkedIn Connected",
+                description: "Your LinkedIn account has been successfully connected!",
+              });
             }
           } catch (error) {
             console.error('Error creating LinkedIn account record:', error);
+            toast({
+              title: "Error",
+              description: "Failed to connect LinkedIn account. Please try again.",
+              variant: "destructive",
+            });
           }
         }
       }
     };
 
     checkLinkedInConnection();
-  }, [accounts, refetch, toast]);
+  }, [accounts, refetch, toast, searchParams]);
 
   const handleConnectAccount = async () => {
     try {
+      console.log('Initiating LinkedIn connection...');
+      
+      const redirectUrl = `${window.location.origin}/dashboard?tab=linkedin`;
+      console.log('Redirect URL:', redirectUrl);
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: {
-          redirectTo: `${window.location.origin}/dashboard?tab=linkedin`,
+          redirectTo: redirectUrl,
           scopes: 'openid profile email'
         }
       });
 
       if (error) {
+        console.error('LinkedIn OAuth error:', error);
         toast({
           title: "Connection Failed",
-          description: error.message,
+          description: error.message || "Failed to connect to LinkedIn. Please try again.",
           variant: "destructive",
         });
+      } else {
+        console.log('LinkedIn OAuth initiated successfully');
       }
     } catch (error) {
       console.error('LinkedIn connection error:', error);

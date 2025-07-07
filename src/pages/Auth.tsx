@@ -62,10 +62,13 @@ const Auth = () => {
       setAuthLoading(true);
       console.log('Attempting LinkedIn sign in...');
       
+      const redirectUrl = `${window.location.origin}/dashboard?tab=linkedin&oauth=linkedin`;
+      console.log('LinkedIn redirect URL:', redirectUrl);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: redirectUrl,
           scopes: 'openid profile email'
         }
       });
@@ -180,7 +183,7 @@ const Auth = () => {
     }
   };
 
-  const signOut = async () => {
+  const handleSignOut = async () => {
     try {
       setAuthLoading(true);
       const { error } = await supabase.auth.signOut();
@@ -258,7 +261,7 @@ const Auth = () => {
               </div>
               
               <Button
-                onClick={signOut}
+                onClick={handleSignOut}
                 disabled={authLoading}
                 variant="outline"
                 className="w-full h-11 sm:h-12"
