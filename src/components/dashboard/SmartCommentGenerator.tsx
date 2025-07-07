@@ -20,7 +20,7 @@ const SmartCommentGenerator = () => {
   const [generatedComment, setGeneratedComment] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { targets } = useEngagementTargets();
+  const { targets, createTarget } = useEngagementTargets();
   const { createEngagement } = useEngagementHistory();
 
   const commentStyles = [
@@ -98,8 +98,7 @@ const SmartCommentGenerator = () => {
           status: 'pending' as const
         };
         
-        const { createTarget } = await import('@/hooks/useEngagementTargets');
-        // This would need to be properly implemented with the hook
+        target = await createTarget(targetData);
       }
 
       await createEngagement({
